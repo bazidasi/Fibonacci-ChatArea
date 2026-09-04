@@ -1,0 +1,570 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* radius */
+  --chatbox-radius-none: 0rem;
+  --chatbox-radius-xs: 0.125rem;
+  --chatbox-radius-sm: 0.25rem;
+  --chatbox-radius-md: 0.5rem;
+  --chatbox-radius-lg: 1rem;
+  --chatbox-radius-xl: 1.5rem;
+  --chatbox-radius-xxl: 2rem;
+
+  /* spacing */
+  --chatbox-spacing-none: 0rem;
+  --chatbox-spacing-3xs: 0.125rem;
+  --chatbox-spacing-xxs: 0.25rem;
+  --chatbox-spacing-xs: 0.5rem;
+  --chatbox-spacing-sm: 0.75rem;
+  --chatbox-spacing-md: 1rem;
+  --chatbox-spacing-lg: 1.25rem;
+  --chatbox-spacing-xl: 1.5rem;
+  --chatbox-spacing-xxl: 2rem;
+}
+
+:root {
+  /* colors — Neumorphism palette (Fibonacci Chat Area) */
+  --chatbox-tint-primary: #3d4657;
+  --chatbox-tint-secondary: #5f6b80;
+  --chatbox-tint-tertiary: #8d97ab;
+
+  --chatbox-tint-white: #ffffff;
+  --chatbox-tint-black: #000000;
+  --chatbox-tint-gray: #8d97ab;
+
+  --chatbox-tint-disabled: #a9b2c3;
+  --chatbox-brand: #e91499;
+  --chatbox-tint-brand: var(--chatbox-brand);
+  --chatbox-tint-placeholder: #9aa4b8;
+  --chatbox-tint-error: #e04848;
+  --chatbox-tint-error-disabled: #ff8787;
+  --chatbox-tint-warning: #e8940a;
+  --chatbox-tint-success: #10a37f;
+
+  --chatbox-border-primary: #d5dbe7;
+  --chatbox-border-secondary: #cdd5e2;
+  --chatbox-border-warning: #e8940a;
+  --chatbox-border-error: #e04848;
+  --chatbox-border-success: #10a37f;
+  --chatbox-border-brand: var(--chatbox-brand);
+
+  /* neumorphic surface — one material for the whole app */
+  --neo-surface: #e4e9f1;
+  --neo-surface-raised: #e9edf5;
+  --neo-shadow-dark: #c2c9d6;
+  --neo-shadow-light: #ffffff;
+
+  --neo-shadow-outset-xs: 2px 2px 5px var(--neo-shadow-dark), -2px -2px 5px var(--neo-shadow-light);
+  --neo-shadow-outset-sm: 4px 4px 9px var(--neo-shadow-dark), -4px -4px 9px var(--neo-shadow-light);
+  --neo-shadow-outset-lg: 9px 9px 20px var(--neo-shadow-dark), -9px -9px 20px var(--neo-shadow-light);
+  --neo-shadow-inset-sm: inset 2px 2px 5px var(--neo-shadow-dark), inset -2px -2px 5px var(--neo-shadow-light);
+  --neo-shadow-inset: inset 4px 4px 9px var(--neo-shadow-dark), inset -4px -4px 9px var(--neo-shadow-light);
+
+  --chatbox-background-primary: var(--neo-surface);
+  --chatbox-background-primary-hover: #dfe5ee;
+  --chatbox-background-secondary: var(--neo-surface-raised);
+  --chatbox-background-secondary-hover: #dfe5ee;
+  --chatbox-background-tertiary: #dde3ed;
+  --chatbox-background-tertiary-hover: #d2dae7;
+  --chatbox-background-disabled: #d8dee9;
+
+  --chatbox-background-brand-primary: var(--chatbox-brand);
+  --chatbox-background-brand-primary-hover: color-mix(in srgb, var(--chatbox-brand), black 12%);
+  --chatbox-background-brand-secondary: color-mix(in srgb, var(--chatbox-brand), transparent 92%);
+  --chatbox-background-brand-secondary-hover: color-mix(in srgb, var(--chatbox-brand), transparent 84%);
+
+  --chatbox-background-gray-primary: #868e96;
+  --chatbox-background-gray-primary-hover: #495057;
+  --chatbox-background-gray-secondary: rgb(134, 142, 150, 0.1);
+  --chatbox-background-gray-secondary-hover: rgb(134, 142, 150, 0.12);
+
+  --chatbox-background-success-primary: #12b886;
+  --chatbox-background-success-primary-hover: #0ca678;
+  --chatbox-background-success-secondary: rgb(18, 184, 134, 0.1);
+  --chatbox-background-success-secondary-hover: rgb(18, 184, 134, 0.12);
+
+  --chatbox-background-error-primary: #fa5252;
+  --chatbox-background-error-primary-hover: #f03e3e;
+  --chatbox-background-error-secondary: rgb(250, 82, 82, 0.1);
+  --chatbox-background-error-secondary-hover: rgb(250, 82, 82, 0.12);
+
+  --chatbox-background-warning-primary: #fab005;
+  --chatbox-background-warning-primary-hover: #f59f00;
+  --chatbox-background-warning-secondary: rgb(250, 176, 5, 0.1);
+  --chatbox-background-warning-secondary-hover: rgb(250, 176, 5, 0.12);
+
+  --chatbox-background-mask-overlay: rgb(59, 59, 59, 0.64);
+  --chatbox-background-mask-lighten: rgb(255, 255, 255, 0.76);
+
+  /* shadcn semantic colors */
+  --background: var(--chatbox-background-primary);
+  --foreground: var(--chatbox-tint-primary);
+  --card: var(--chatbox-background-primary);
+  --card-foreground: var(--chatbox-tint-primary);
+  --popover: var(--chatbox-background-primary);
+  --popover-foreground: var(--chatbox-tint-primary);
+  --primary: var(--chatbox-tint-brand);
+  --primary-foreground: #ffffff;
+  --secondary: var(--chatbox-background-secondary);
+  --secondary-foreground: var(--chatbox-tint-primary);
+  --muted: var(--chatbox-background-secondary);
+  --muted-foreground: var(--chatbox-tint-tertiary);
+  --accent: var(--chatbox-background-secondary);
+  --accent-foreground: var(--chatbox-tint-primary);
+  --destructive: var(--chatbox-tint-error);
+  --destructive-foreground: var(--chatbox-tint-white);
+  --border: var(--chatbox-border-primary);
+  --input: var(--chatbox-border-primary);
+  --ring: var(--chatbox-tint-brand);
+
+  /* shadcn sidebar — inset (sidebar-08) surfaces on the app's neo material */
+  --sidebar: var(--neo-surface);
+  --sidebar-foreground: var(--chatbox-tint-primary);
+  --sidebar-primary: var(--chatbox-tint-brand);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--neo-surface-raised);
+  --sidebar-accent-foreground: var(--chatbox-tint-primary);
+  --sidebar-border: var(--chatbox-border-primary);
+  --sidebar-ring: var(--chatbox-tint-brand);
+}
+
+:root[data-mantine-color-scheme="dark"] {
+  /* colors — Neumorphism dark palette */
+  --chatbox-tint-primary: #e6eaf2;
+  --chatbox-tint-secondary: #b8c1d1;
+  --chatbox-tint-tertiary: #7f8999;
+
+  --chatbox-tint-white: #ffffff;
+  --chatbox-tint-black: #000000;
+  --chatbox-tint-gray: #7f8999;
+
+  --chatbox-tint-disabled: #565f6f;
+  --chatbox-brand: #ff3fae;
+  --chatbox-tint-brand: var(--chatbox-brand);
+  --chatbox-tint-placeholder: #6b7488;
+  --chatbox-tint-error: #ff6b6b;
+  --chatbox-tint-error-disabled: rgb(224, 49, 49, 0.5);
+  --chatbox-tint-warning: #ffc86b;
+  --chatbox-tint-success: #3ddbb0;
+
+  --chatbox-border-primary: #323947;
+  --chatbox-border-secondary: #3b4353;
+  --chatbox-border-warning: #ffc86b;
+  --chatbox-border-error: #ff6b6b;
+  --chatbox-border-success: #3ddbb0;
+  --chatbox-border-brand: var(--chatbox-brand);
+
+  /* neumorphic surface — one material for the whole app */
+  --neo-surface: #262b35;
+  --neo-surface-raised: #2c313d;
+  --neo-shadow-dark: #1b1f27;
+  --neo-shadow-light: #343b49;
+
+  --neo-shadow-outset-xs: 2px 2px 5px var(--neo-shadow-dark), -2px -2px 5px var(--neo-shadow-light);
+  --neo-shadow-outset-sm: 4px 4px 9px var(--neo-shadow-dark), -4px -4px 9px var(--neo-shadow-light);
+  --neo-shadow-outset-lg: 9px 9px 20px var(--neo-shadow-dark), -9px -9px 20px var(--neo-shadow-light);
+  --neo-shadow-inset-sm: inset 2px 2px 5px var(--neo-shadow-dark), inset -2px -2px 5px var(--neo-shadow-light);
+  --neo-shadow-inset: inset 4px 4px 9px var(--neo-shadow-dark), inset -4px -4px 9px var(--neo-shadow-light);
+
+  --chatbox-background-primary: var(--neo-surface);
+  --chatbox-background-primary-hover: #22262f;
+  --chatbox-background-secondary: var(--neo-surface-raised);
+  --chatbox-background-secondary-hover: #343a48;
+  --chatbox-background-tertiary: #303644;
+  --chatbox-background-tertiary-hover: #3a4150;
+  --chatbox-background-disabled: #2a2f3a;
+
+  --chatbox-background-brand-primary: var(--chatbox-brand);
+  --chatbox-background-brand-primary-hover: color-mix(in srgb, var(--chatbox-brand), black 12%);
+  --chatbox-background-brand-secondary: color-mix(in srgb, var(--chatbox-brand), transparent 80%);
+  --chatbox-background-brand-secondary-hover: color-mix(in srgb, var(--chatbox-brand), transparent 76%);
+
+  --chatbox-background-gray-primary: #343a40;
+  --chatbox-background-gray-primary-hover: #212529;
+  --chatbox-background-gray-secondary: rgb(134, 142, 150, 0.15);
+  --chatbox-background-gray-secondary-hover: rgb(134, 142, 150, 0.2);
+
+  --chatbox-background-success-primary: #099268;
+  --chatbox-background-success-primary-hover: #087f5b;
+  --chatbox-background-success-secondary: rgb(18, 184, 134, 0.15);
+  --chatbox-background-success-secondary-hover: rgb(18, 184, 134, 0.2);
+
+  --chatbox-background-error-primary: #e03131;
+  --chatbox-background-error-primary-hover: #c92a2a;
+  --chatbox-background-error-secondary: rgb(250, 82, 82, 0.15);
+  --chatbox-background-error-secondary-hover: rgb(250, 82, 82, 0.2);
+
+  --chatbox-background-warning-primary: #f08c00;
+  --chatbox-background-warning-primary-hover: #e67700;
+  --chatbox-background-warning-secondary: rgb(250, 176, 5, 0.15);
+  --chatbox-background-warning-secondary-hover: rgb(250, 176, 5, 0.2);
+
+  --chatbox-background-mask-overlay: rgb(31, 31, 31, 0.78);
+  --chatbox-background-mask-lighten: rgb(173, 181, 189, 0.48);
+}
+
+:root[data-mantine-color-scheme="light"][data-mantine-color-scheme],
+:root[data-mantine-color-scheme="dark"][data-mantine-color-scheme] {
+  /* brand */
+  --mantine-color-chatbox-brand-text: var(--chatbox-tint-brand);
+  --mantine-color-chatbox-brand-filled: var(--chatbox-background-brand-primary);
+  --mantine-color-chatbox-brand-filled-hover: var(--chatbox-background-brand-primary-hover);
+  --mantine-color-chatbox-brand-light: var(--chatbox-background-brand-secondary);
+  --mantine-color-chatbox-brand-light-hover: var(--chatbox-background-brand-secondary-hover);
+  --mantine-color-chatbox-brand-light-color: var(--chatbox-tint-brand);
+  --mantine-color-chatbox-brand-outline: var(--chatbox-border-brand);
+  --mantine-color-chatbox-brand-outline-hover: color-mix(in srgb, var(--chatbox-border-brand), transparent 95%);
+
+  /* success */
+  --mantine-color-chatbox-success-text: var(--chatbox-tint-success);
+  --mantine-color-chatbox-success-filled: var(--chatbox-background-success-primary);
+  --mantine-color-chatbox-success-filled-hover: var(--chatbox-background-success-primary-hover);
+  --mantine-color-chatbox-success-light: var(--chatbox-background-success-secondary);
+  --mantine-color-chatbox-success-light-hover: var(--chatbox-background-success-secondary-hover);
+  --mantine-color-chatbox-success-light-color: var(--chatbox-tint-success);
+  --mantine-color-chatbox-success-outline: var(--chatbox-border-success);
+  --mantine-color-chatbox-success-outline-hover: color-mix(in srgb, var(--chatbox-border-success), transparent 95%);
+
+  /* error */
+  --mantine-color-chatbox-error-text: var(--chatbox-tint-error);
+  --mantine-color-chatbox-error-filled: var(--chatbox-background-error-primary);
+  --mantine-color-chatbox-error-filled-hover: var(--chatbox-background-error-primary-hover);
+  --mantine-color-chatbox-error-light: var(--chatbox-background-error-secondary);
+  --mantine-color-chatbox-error-light-hover: var(--chatbox-background-error-secondary-hover);
+  --mantine-color-chatbox-error-light-color: var(--chatbox-tint-error);
+  --mantine-color-chatbox-error-outline: var(--chatbox-border-error);
+  --mantine-color-chatbox-error-outline-hover: color-mix(in srgb, var(--chatbox-border-error), transparent 95%);
+
+  /* warning */
+  --mantine-color-chatbox-warning-text: var(--chatbox-tint-warning);
+  --mantine-color-chatbox-warning-filled: var(--chatbox-background-warning-primary);
+  --mantine-color-chatbox-warning-filled-hover: var(--chatbox-background-warning-primary-hover);
+  --mantine-color-chatbox-warning-light: var(--chatbox-background-warning-secondary);
+  --mantine-color-chatbox-warning-light-hover: var(--chatbox-background-warning-secondary-hover);
+  --mantine-color-chatbox-warning-light-color: var(--chatbox-tint-warning);
+  --mantine-color-chatbox-warning-outline: var(--chatbox-border-warning);
+  --mantine-color-chatbox-warning-outline-hover: color-mix(in srgb, var(--chatbox-border-warning), transparent 95%);
+
+  /* warning */
+  --mantine-color-chatbox-gray-text: var(--chatbox-tint-gray);
+  --mantine-color-chatbox-gray-filled: var(--chatbox-background-gray-primary);
+  --mantine-color-chatbox-gray-filled-hover: var(--chatbox-background-gray-primary-hover);
+  --mantine-color-chatbox-gray-light: var(--chatbox-background-gray-secondary);
+  --mantine-color-chatbox-gray-light-hover: var(--chatbox-background-gray-secondary-hover);
+  --mantine-color-chatbox-gray-light-color: var(--chatbox-tint-gray);
+  --mantine-color-chatbox-gray-outline: var(--chatbox-tint-gray);
+  --mantine-color-chatbox-gray-outline-hover: color-mix(in srgb, var(--chatbox-tint-gray), transparent 95%);
+
+  --mantine-color-chatbox-primary-text: var(--chatbox-tint-primary);
+  --mantine-color-chatbox-primary-filled: var(--chatbox-background-primary);
+  --mantine-color-chatbox-primary-filled-hover: var(--chatbox-background-primary-hover);
+  --mantine-color-chatbox-primary-light: var(--chatbox-background-secondary);
+  --mantine-color-chatbox-primary-light-hover: var(--chatbox-background-secondary-hover);
+  --mantine-color-chatbox-primary-light-color: var(--chatbox-tint-primary);
+  --mantine-color-chatbox-primary-outline: var(--chatbox-border-primary);
+  --mantine-color-chatbox-primary-outline-hover: color-mix(in srgb, var(--chatbox-border-primary), transparent 95%);
+}
+
+.mantine-Spotlight-actionsGroup {
+  margin-bottom: 2rem;
+}
+
+/* ============================================================
+   shadcn/ui primitives: restore Tailwind-preflight basics
+   Preflight is disabled (tailwind.config.js corePlugins.preflight=false)
+   because Mantine owns global resets. Without the rules below, vendored
+   shadcn components fall back to UA styles: <button> gets a native
+   border + gray fill (the "unstyled slab" look in the sidebar) and
+   <ul data-sidebar="menu"> shows default disc markers (stray dots on
+   the window edge). Element-level specificity keeps Mantine safe:
+   every .mantine-* class overrides these where it sets its own values.
+   ============================================================ */
+button {
+  border: none;
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+ul[data-sidebar='menu'],
+ul[data-sidebar='menu-sub'] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul[data-sidebar='menu'] > li,
+ul[data-sidebar='menu-sub'] > li {
+  list-style: none;
+}
+
+/* ---------- chat input surface (shared by InputBox + PendingActionBar) ----------
+   Large soft well matching the reference design: 24px radius, no hard
+   border, gentle lift, and a magenta focus glow when typing. */
+.chatbox-input-surface {
+  border: none !important;
+  border-radius: 24px;
+  transition: box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.chatbox-input-surface:focus-within {
+  box-shadow:
+    0 6px 28px -6px rgba(0, 0, 0, 0.14),
+    0 0 0 1.5px color-mix(in srgb, var(--chatbox-brand) 38%, transparent),
+    0 0 0 6px color-mix(in srgb, var(--chatbox-brand) 9%, transparent);
+}
+
+[data-mantine-color-scheme='dark'] .chatbox-input-surface:focus-within {
+  box-shadow:
+    0 6px 28px -6px rgba(0, 0, 0, 0.55),
+    0 0 0 1.5px color-mix(in srgb, var(--chatbox-brand) 55%, transparent),
+    0 0 0 6px color-mix(in srgb, var(--chatbox-brand) 12%, transparent);
+}
+
+/* circular send / stop button in the composer */
+.chatbox-send-button {
+  border-radius: 9999px;
+  transition: transform 140ms ease, filter 140ms ease;
+}
+
+.chatbox-send-button:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.chatbox-send-button:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+/* home hero orb: gentle levitation */
+@keyframes chatbox-orb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatbox-orb-float,
+  [style*='chatbox-orb-float'] {
+    animation: none !important;
+  }
+}
+
+.mantine-Spotlight-actionDescription {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+/* KaTeX styles for preventing overflow */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.5rem;
+}
+
+.katex-display > .katex {
+  display: inline-block;
+  /* Keep the box at least as wide as the line so \tag stays on the right. */
+  min-width: 100%;
+}
+
+/* Hide scrollbar for inline math */
+.katex:not(.katex-display) {
+  /* max-width: 100%; */
+  overflow: hidden;
+}
+
+/* Style scrollbar for displayed math equations */
+.katex-display::-webkit-scrollbar {
+  height: 6px;
+}
+
+.katex-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.katex-display::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.katex-display:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar */
+[data-mantine-color-scheme="dark"] .katex-display::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-mantine-color-scheme="dark"] .katex-display:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.copilot-picker-scroll-area .mantine-ScrollArea-scrollbar {
+  padding-left: var(--mantine-spacing-md);
+  padding-right: var(--mantine-spacing-md);
+}
+
+.pswp__top-bar {
+  margin-top: var(--mobile-safe-area-inset-top);
+  -webkit-app-region: no-drag;
+}
+html[data-need-room-for-mac-controls="true"] .pswp__counter {
+  padding-top: 1rem;
+}
+html[data-need-room-for-windows-controls="true"] .pswp__top-bar {
+  padding-right: 9rem;
+}
+.pswp {
+  pointer-events: auto;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+div[data-vaul-handle] {
+  margin: 12px auto;
+  width: 64px;
+  height: 4px;
+  background-color: var(--chatbox-tint-tertiary);
+  border-radius: 2px;
+  cursor: grab;
+  user-select: none;
+  opacity: 0.5;
+}
+div[data-vaul-overlay] {
+  z-index: 2000;
+}
+div[data-vaul-drawer] {
+  z-index: 2000;
+}
+
+/* Rotating border beam on the pending-approval card (ToolCallPartUI): a bright amber
+   segment travels around a faint ring. Without @property support the ring degrades
+   to a static gradient border. */
+@property --chatbox-approval-ring-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes chatbox-approval-ring-spin {
+  to {
+    --chatbox-approval-ring-angle: 360deg;
+  }
+}
+
+.chatbox-approval-ring {
+  position: relative;
+}
+
+/* The band is drawn just inside the card edge (inset: 0), because ancestor containers
+   (Collapse, virtualized list items) clip anything that sticks out of the card. */
+.chatbox-approval-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--chatbox-approval-ring-angle),
+    color-mix(in srgb, var(--chatbox-tint-warning) 18%, transparent),
+    color-mix(in srgb, var(--chatbox-tint-warning) 95%, transparent) 12%,
+    color-mix(in srgb, var(--chatbox-tint-warning) 18%, transparent) 30%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: chatbox-approval-ring-spin 2.5s linear infinite;
+  pointer-events: none;
+}
+
+/* Pending-action bar above the input box: item advance, progress pop, resolve
+   flash, and the attention pulse played when the user clicks the locked input. */
+@keyframes chatbox-action-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chatbox-action-item-enter {
+  animation: chatbox-action-item-in 240ms ease;
+}
+
+@keyframes chatbox-action-progress-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.chatbox-action-progress-pop {
+  animation: chatbox-action-progress-pop 320ms ease;
+}
+
+@keyframes chatbox-action-resolve-flash {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.chatbox-action-resolve-flash {
+  animation: chatbox-action-resolve-flash 700ms ease forwards;
+  pointer-events: none;
+}
+
+@keyframes chatbox-action-bar-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--chatbox-tint-warning) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+/* Two identical classes let React restart the animation by swapping class names. */
+.chatbox-action-bar-pulse,
+.chatbox-action-bar-pulse-alt {
+  animation: chatbox-action-bar-pulse 600ms ease-out 2;
+}

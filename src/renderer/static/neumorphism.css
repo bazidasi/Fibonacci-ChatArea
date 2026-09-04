@@ -1,0 +1,355 @@
+/* ============================================================
+   Fibonacci Chat Area — Neumorphism (Soft UI) component layer
+   One soft material, dual shadows (dark bottom-right / light
+   top-left). Extruded surfaces for interactive elements,
+   inset surfaces for wells (inputs, tracks, screens).
+   ============================================================ */
+
+/* ---------- app shell ---------- */
+body,
+html {
+  background-color: var(--neo-surface);
+}
+
+/* main frame: replace hard border + single drop shadow with a
+   soft neumorphic extrusion */
+.App > .grid > .relative,
+.App .title-bar ~ * {
+  border-color: transparent !important;
+}
+
+/* ---------- Mantine Paper / Card ---------- */
+.mantine-Paper-root,
+.mantine-Card-root {
+  border-color: transparent;
+  box-shadow: var(--neo-shadow-outset-sm);
+  background-color: var(--neo-surface);
+  transition: box-shadow 180ms ease;
+}
+
+.mantine-Paper-root[withBorder='true'],
+.mantine-Paper-root[data-with-border='true'] {
+  border: none;
+}
+
+/* ---------- Buttons ---------- */
+.mantine-Button-root {
+  border: none;
+  transition: box-shadow 160ms ease, transform 120ms ease, background-color 160ms ease;
+}
+
+/* default (secondary) variant: soft extrusion that presses in */
+.mantine-Button-root[data-variant='default'] {
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-outset-sm);
+  border: none;
+  color: var(--chatbox-tint-primary);
+}
+
+.mantine-Button-root[data-variant='default']:hover {
+  background: var(--neo-surface-raised);
+  box-shadow: var(--neo-shadow-outset-lg);
+}
+
+.mantine-Button-root[data-variant='default']:active {
+  box-shadow: var(--neo-shadow-inset-sm);
+  transform: translateY(0.5px);
+}
+
+/* light variant: tinted soft chip */
+.mantine-Button-root[data-variant='light'] {
+  box-shadow: var(--neo-shadow-outset-xs);
+  border: none;
+}
+
+.mantine-Button-root[data-variant='light']:active {
+  box-shadow: var(--neo-shadow-inset-sm);
+}
+
+/* filled/brand: gradient extrusion with a soft brand glow */
+.mantine-Button-root[data-variant='filled'] {
+  border: none;
+  box-shadow:
+    var(--neo-shadow-outset-sm),
+    0 6px 18px color-mix(in srgb, var(--chatbox-brand) 32%, transparent);
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chatbox-brand), #ff5fc0 24%),
+    var(--chatbox-brand)
+  );
+}
+
+.mantine-Button-root[data-variant='filled']:hover {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chatbox-brand), #ff5fc0 10%),
+    color-mix(in srgb, var(--chatbox-brand), black 6%)
+  );
+  box-shadow:
+    var(--neo-shadow-outset-lg),
+    0 8px 22px color-mix(in srgb, var(--chatbox-brand) 40%, transparent);
+}
+
+.mantine-Button-root[data-variant='filled']:active {
+  transform: translateY(1px);
+  box-shadow:
+    var(--neo-shadow-inset-sm),
+    0 3px 10px color-mix(in srgb, var(--chatbox-brand) 24%, transparent);
+}
+
+/* ---------- ActionIcon ---------- */
+.mantine-ActionIcon-root[data-variant='default'] {
+  background: var(--neo-surface);
+  border: none;
+  box-shadow: var(--neo-shadow-outset-xs);
+}
+
+.mantine-ActionIcon-root[data-variant='default']:hover {
+  box-shadow: var(--neo-shadow-outset-sm);
+  background: var(--neo-surface-raised);
+}
+
+.mantine-ActionIcon-root[data-variant='default']:active {
+  box-shadow: var(--neo-shadow-inset-sm);
+}
+
+/* ---------- Inputs (inset wells) ---------- */
+.mantine-Input-input {
+  background: var(--neo-surface);
+  border: none;
+  box-shadow: var(--neo-shadow-inset-sm);
+  transition: box-shadow 160ms ease;
+}
+
+.mantine-Input-input:focus {
+  border: none;
+  box-shadow:
+    var(--neo-shadow-inset),
+    0 0 0 2px color-mix(in srgb, var(--chatbox-brand) 45%, transparent);
+}
+
+.mantine-Input-input::placeholder {
+  color: var(--chatbox-tint-placeholder);
+}
+
+textarea.mantine-Input-input {
+  background: var(--neo-surface);
+}
+
+/* ---------- Modal / Drawer ---------- */
+.mantine-Modal-content,
+.mantine-Drawer-content {
+  background: var(--neo-surface);
+  border: none;
+  box-shadow: var(--neo-shadow-outset-lg);
+}
+
+.mantine-Modal-header,
+.mantine-Modal-root {
+  background: transparent;
+}
+
+.mantine-Modal-overlay,
+.mantine-Drawer-overlay,
+.mantine-Overlay-root {
+  background-color: color-mix(in srgb, var(--neo-shadow-dark) 55%, transparent) !important;
+  backdrop-filter: blur(3px);
+}
+
+/* ---------- Dropdowns: Menu, Popover, Select, Combobox, Tooltip ---------- */
+.mantine-Menu-dropdown,
+.mantine-Popover-dropdown,
+.mantine-Combobox-dropdown,
+.mantine-Select-dropdown {
+  background: var(--neo-surface-raised);
+  border: none;
+  box-shadow: var(--neo-shadow-outset-lg);
+}
+
+.mantine-Menu-item,
+.mantine-Combobox-option {
+  border-radius: calc(var(--chatbox-radius-md));
+}
+
+.mantine-Menu-item:hover,
+.mantine-Combobox-option:hover {
+  background: color-mix(in srgb, var(--chatbox-brand) 10%, var(--neo-surface-raised));
+}
+
+.mantine-Tooltip-tooltip {
+  background: var(--neo-surface-raised);
+  color: var(--chatbox-tint-primary);
+  border: none;
+  box-shadow: var(--neo-shadow-outset-sm);
+}
+
+/* ---------- SegmentedControl ---------- */
+.mantine-SegmentedControl-root {
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-inset-sm);
+  border: none;
+  padding: 4px;
+}
+
+.mantine-SegmentedControl-indicator {
+  background: var(--neo-surface-raised);
+  box-shadow: var(--neo-shadow-outset-xs);
+}
+
+/* ---------- Switch ---------- */
+.mantine-Switch-input {
+  border: none;
+  background-color: var(--neo-surface);
+  box-shadow: var(--neo-shadow-inset-sm);
+}
+
+.mantine-Switch-input:checked {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chatbox-brand), #ff5fc0 20%),
+    var(--chatbox-brand)
+  );
+  border-color: transparent;
+}
+
+.mantine-Switch-input:checked::before {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- Checkbox / Radio ---------- */
+.mantine-Checkbox-input,
+.mantine-Radio-input {
+  border: none;
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-inset-sm);
+  transition: box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.mantine-Checkbox-input:checked,
+.mantine-Checkbox-input:indeterminate,
+.mantine-Radio-input:checked {
+  background-color: var(--chatbox-brand);
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chatbox-brand), #ff5fc0 20%),
+    var(--chatbox-brand)
+  );
+  border-color: transparent;
+}
+
+.mantine-Checkbox-input:hover,
+.mantine-Radio-input:hover {
+  box-shadow: var(--neo-shadow-inset);
+}
+
+/* ---------- Tabs ---------- */
+.mantine-Tabs-list {
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-inset-sm);
+  border-radius: var(--chatbox-radius-md);
+  padding: 4px;
+  gap: 4px;
+}
+
+.mantine-Tabs-tab {
+  border: none;
+  background: transparent;
+  border-radius: var(--chatbox-radius-sm);
+}
+
+.mantine-Tabs-tab[data-active] {
+  background: var(--neo-surface-raised);
+  box-shadow: var(--neo-shadow-outset-xs);
+  border: none;
+}
+
+.mantine-Tabs-tab[data-active] .mantine-Tabs-tabLabel {
+  color: var(--chatbox-tint-brand);
+}
+
+/* ---------- Progress / Slider ---------- */
+.mantine-Progress-root {
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-inset-sm);
+  border-radius: 9999px;
+}
+
+.mantine-Progress-section {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chatbox-brand), #ff5fc0 20%),
+    var(--chatbox-brand)
+  );
+  border-radius: 9999px;
+}
+
+.mantine-Slider-track::before {
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-inset-sm);
+}
+
+.mantine-Slider-bar {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chatbox-brand), #ff5fc0 20%),
+    var(--chatbox-brand)
+  );
+}
+
+.mantine-Slider-thumb {
+  background: var(--neo-surface-raised);
+  border: none;
+  box-shadow: var(--neo-shadow-outset-sm);
+}
+
+/* ---------- Scrollbars ---------- */
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--chatbox-tint-tertiary) 55%, var(--neo-surface));
+  border: 4px solid transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--chatbox-tint-tertiary) 80%, var(--neo-surface));
+}
+
+/* ---------- Pagination / Spotlight ---------- */
+.mantine-Spotlight-action {
+  border-radius: var(--chatbox-radius-md);
+}
+
+.mantine-Spotlight-action[data-hovered] {
+  background: color-mix(in srgb, var(--chatbox-brand) 10%, var(--neo-surface-raised));
+}
+
+/* ---------- misc surfaces ---------- */
+.mantine-Table-table th {
+  background: var(--neo-surface-raised);
+}
+
+.mantine-Accordion-control:hover {
+  background: color-mix(in srgb, var(--chatbox-tint-tertiary) 8%, transparent);
+}
+
+.mantine-Badge-root[data-variant='default'] {
+  background: var(--neo-surface);
+  box-shadow: var(--neo-shadow-outset-xs);
+  border: none;
+}
+
+.mantine-Alert-root {
+  border: none;
+  box-shadow: var(--neo-shadow-outset-sm);
+}
+
+/* selection color in brand tone */
+::selection {
+  background: color-mix(in srgb, var(--chatbox-brand) 30%, transparent);
+}
+
+/* focus rings in brand tone, soft */
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--chatbox-brand) 55%, transparent);
+  outline-offset: 2px;
+}
