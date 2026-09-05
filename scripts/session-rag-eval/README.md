@@ -18,7 +18,7 @@ Run:
 CHATBOX_EVAL_BASE_URL="https://your-openai-compatible-endpoint/v1" \
 CHATBOX_EVAL_MODEL="your-model" \
 CHATBOX_EVAL_API_KEY="your-api-key" \
-pnpm eval:session-rag
+bun run eval:session-rag
 ```
 
 You can also pass a Chatbox license as `CHATBOX_LICENSE_KEY`; the script uses it as the bearer token when `CHATBOX_EVAL_API_KEY` is not set.
@@ -26,9 +26,9 @@ You can also pass a Chatbox license as `CHATBOX_LICENSE_KEY`; the script uses it
 Options:
 
 ```bash
-pnpm eval:session-rag -- --fixtures-repo ../../chatbox-session-rag-eval-fixtures
-pnpm eval:session-rag -- --case citrine-threshold
-pnpm eval:session-rag -- --dry-run
+bun run eval:session-rag -- --fixtures-repo ../../chatbox-session-rag-eval-fixtures
+bun run eval:session-rag -- --case citrine-threshold
+bun run eval:session-rag -- --dry-run
 ```
 
 This harness intentionally simulates the app's session attachment tools instead of launching Electron. It is meant to
@@ -44,7 +44,7 @@ the renderer bundle:
 
 ```bash
 USE_LOCAL_API=true node ./node_modules/electron-vite/bin/electron-vite.js build --mode development
-pnpm eval:session-rag:chatbox -- --case long-citrine-threshold --keep-user-data
+bun run eval:session-rag:chatbox -- --case long-citrine-threshold --keep-user-data
 ```
 
 The Chatbox-flow script copies the user's `config.json` into an isolated temporary userDataDir and points the session
@@ -62,9 +62,9 @@ The script also:
 Useful cases:
 
 ```bash
-pnpm eval:session-rag:chatbox -- --case implicit-citrine-current-policy
-pnpm eval:session-rag:chatbox -- --case implicit-multi-doc-release-followup
-pnpm eval:session-rag:chatbox -- --case real-wiki-apollo-implicit-landing-site
-pnpm eval:session-rag:chatbox -- --case multi-turn-real-wiki-apollo-followup
-pnpm eval:session-rag:chatbox -- --case real-wiki-unrelated-capital
+bun run eval:session-rag:chatbox -- --case implicit-citrine-current-policy
+bun run eval:session-rag:chatbox -- --case implicit-multi-doc-release-followup
+bun run eval:session-rag:chatbox -- --case real-wiki-apollo-implicit-landing-site
+bun run eval:session-rag:chatbox -- --case multi-turn-real-wiki-apollo-followup
+bun run eval:session-rag:chatbox -- --case real-wiki-unrelated-capital
 ```

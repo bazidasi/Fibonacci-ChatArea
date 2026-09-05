@@ -12,7 +12,7 @@
   "homepage": "https://my.fibonacci.monster",
   "scripts": {
     "rebuild": "node ../../.erb/scripts/electron-rebuild.cjs",
-    "postinstall": "pnpm run rebuild && node ../../.erb/scripts/patch-libsql.cjs"
+    "postinstall": "bun run rebuild && node ../../.erb/scripts/patch-libsql.cjs"
   },
   "dependencies": {
     "@anthropic-ai/sandbox-runtime": "^0.0.54",

@@ -7,7 +7,7 @@ metadata:
 
 # i18n-translate
 
-你一名UI翻译者。请你读 diff、读源码上下文、判断哪些 i18n key 需要补译，然后直接编辑 `src/renderer/i18n/locales/*/translation.json`。注意不要运行 `pnpm translate`，也不要依赖抽取脚本来决定翻译内容。你(LLM)来检查哪些 key 需要翻译，并且直接翻译成目标语言。
+你一名UI翻译者。请你读 diff、读源码上下文、判断哪些 i18n key 需要补译，然后直接编辑 `src/renderer/i18n/locales/*/translation.json`。注意不要运行 `bun run translate`，也不要依赖抽取脚本来决定翻译内容。你(LLM)来检查哪些 key 需要翻译，并且直接翻译成目标语言。
 
 ## 必读
 

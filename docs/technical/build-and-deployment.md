@@ -47,6 +47,21 @@ auto-install-peers=true
 
 ---
 
+## pnpm 到 bun 迁移（2026-09）
+
+项目随后从 pnpm 迁移到 bun（v1.4+），hoisted 结构与 electron-builder 兼容方案保持不变：
+
+- workspace 由根 `package.json` 的 `workspaces` 字段声明（`packages/*`、`release/app`），`pnpm-workspace.yaml` 已删除
+- 补丁迁移为 `package.json` 的 `patchedDependencies` —— bun 与 pnpm 的 patch 文件格式兼容，`patches/*.patch` 原样沿用
+- 依赖覆盖迁移为 `package.json` 的 `overrides`；`release/app` 的 `ws`/`libsql` 版本约束同步镜像到根 `overrides`，保证 `bun.lock` 与 `release/app/package-lock.json` 对齐
+- `onlyBuiltDependencies` → `trustedDependencies`（bun 默认拦截依赖的 install 脚本，白名单语义与 pnpm 一致）
+- `minimumReleaseAge: 10080`（分钟）→ `bunfig.toml` 的 `minimumReleaseAge = 604800`（秒），同样为 7 天
+- `.npmrc` 已删除：bun 默认即 hoisted 布局并自动安装 peer dependencies
+
+`release/app` 的 `npm ci` 打包流程保持不变。`.erb/scripts/ensure-app-deps.cjs` 的打包前版本校验改为解析根 `bun.lock`（JSONC 格式：包条目按安装路径为键，如 `@a2a-js/sdk/uuid` 表示嵌套副本；条目值为 `[resolvedSpec, integrity, metadata]` 数组）并与 `release/app/package-lock.json` 比对。
+
+---
+
 ## 依赖管理分离
 
 项目采用 **Two-Package.json** 架构（来源：[`docs/dependency-reorg.md`](../dependency-reorg.md)）：

@@ -1,10 +1,10 @@
 /**
  * Root postinstall script.
- * 
+ *
  * NOTE: We intentionally do NOT run electron-builder install-app-deps here.
- * With pnpm workspaces, electron-builder install-app-deps corrupts the shared
- * node_modules by running pnpm install --production in release/app.
- * 
+ * It corrupts the shared hoisted node_modules by running an install in
+ * release/app against the workspace root.
+ *
  * Native module rebuilding is handled by:
  * 1. release/app/postinstall runs electron-rebuild for native deps in release/app
  * 2. The build process handles the rest
@@ -24,4 +24,4 @@ try {
     }
 }
 
-console.log('Postinstall complete (skipping electron-builder install-app-deps for pnpm compatibility)')
+console.log('Postinstall complete (skipping electron-builder install-app-deps)')

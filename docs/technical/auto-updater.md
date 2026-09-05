@@ -182,7 +182,7 @@ Mobile 和 Web 平台不使用 electron-updater，显示外部链接跳转到应
 ### 单元测试
 
 ```bash
-pnpm test -- --run src/renderer/stores/updateStore.test.ts
+bun run test -- --run src/renderer/stores/updateStore.test.ts
 ```
 
 覆盖：状态机转换、dismiss 逻辑、up-to-date 超时重置、进度去重。
@@ -192,8 +192,8 @@ pnpm test -- --run src/renderer/stores/updateStore.test.ts
 1. **打包测试版本**
 
    ```bash
-   pnpm build
-   UPDATE_CHANNEL=latest pnpm exec electron-builder build --publish never
+   bun run build
+   UPDATE_CHANNEL=latest bunx electron-builder build --publish never
    ```
 
    产物在 `release/build/`，包含 arm64 和 x64 两个 DMG。
@@ -253,8 +253,8 @@ cd release/app
 
 # 打包
 cd ../..
-pnpm build
-UPDATE_CHANNEL=latest pnpm exec electron-builder build --publish never
+bun run build
+UPDATE_CHANNEL=latest bunx electron-builder build --publish never
 ```
 
 安装这个 DMG 作为测试用的"旧版本"。
@@ -265,8 +265,8 @@ UPDATE_CHANNEL=latest pnpm exec electron-builder build --publish never
 
 ```bash
 # 修改版本号为 "1.1.0"
-pnpm build
-UPDATE_CHANNEL=latest pnpm exec electron-builder build --publish never
+bun run build
+UPDATE_CHANNEL=latest bunx electron-builder build --publish never
 ```
 
 打包完成后 `release/build/` 中会生成：
@@ -327,7 +327,7 @@ const feedUrls = [
 
 ```bash
 # 启动开发服务
-pnpm dev
+bun run dev
 ```
 
 打开 DevTools Console，手动设置状态：

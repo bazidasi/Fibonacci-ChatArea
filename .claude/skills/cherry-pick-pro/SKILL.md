@@ -71,8 +71,8 @@ git diff-tree --no-commit-id --name-only -r <commit>
 - `playwright` - pro testing only
 - `@ruguoapp/jk-analytics` - pro analytics only
 
-#### `pnpm-lock.yaml`:
-- Will almost always conflict. Accept either side, then run `pnpm install --no-frozen-lockfile` at the end to regenerate.
+#### `bun.lock`:
+- Will almost always conflict. Accept either side, then run `bun install` at the end to regenerate.
 
 ### 5. Cherry-pick process
 For each commit:
@@ -81,21 +81,21 @@ For each commit:
    - Remove mobile-only files with `git rm`
    - Fix package name conflicts (keep `ce`)
    - Remove pro-only dependencies
-   - Accept either side for `pnpm-lock.yaml`
+   - Accept either side for `bun.lock`
 3. Commit with original message + `(cherry picked from pro commit <hash>)` note
 
 ### 6. Finalize
 After all cherry-picks:
 ```bash
-pnpm install --no-frozen-lockfile  # regenerate lockfile
-git add pnpm-lock.yaml
-git commit -m "chore: regenerate pnpm-lock.yaml for open repo"
+bun install  # regenerate lockfile
+git add bun.lock
+git commit -m "chore: regenerate bun.lock for open repo"
 ```
 
 ### 7. Verify
 ```bash
 git log --oneline <start>..HEAD  # review all new commits
-pnpm install  # ensure deps resolve
+bun install  # ensure deps resolve
 ```
 
 ### 8. Release (if syncing a version release)

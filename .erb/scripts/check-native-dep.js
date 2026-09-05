@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { execSync } from 'child_process'
+
 import fs from 'fs'
 import path from 'path'
 import { dependencies } from '../../package.json'
@@ -107,41 +107,30 @@ if (dependencies) {
     console.debug(chalk.gray(`- With binding.gyp: ${nativeDepsByBindingGyp.join(', ') || 'none'}`))
     console.debug(chalk.gray(`- With .node files: ${nativeDepsByNodeFiles.join(', ') || 'none'}`))
     
-    try {
-        // Find the reason for why the dependency is installed. If it is installed
-        // because of a devDependency then that is okay. Warn when it is installed
-        // because of a dependency
-        // Note: pnpm ls --json returns an array (one entry per workspace package)
-        const lsResult = JSON.parse(
-            execSync(`pnpm ls ${allNativeDeps.join(' ')} --json`).toString()
-        )
-        const rootResult = Array.isArray(lsResult)
-            ? lsResult.find((item) => item.path === process.cwd()) ?? lsResult[0]
-            : lsResult
-        const dependenciesObject = rootResult?.dependencies ?? {}
-        const rootDependencies = Object.keys(dependenciesObject)
-        const filteredRootDependencies = rootDependencies.filter((rootDependency) =>
-            dependenciesKeys.includes(rootDependency) && !excludePackages.includes(rootDependency)
-        )
-        if (filteredRootDependencies.length > 0) {
-            const plural = filteredRootDependencies.length > 1
-            console.log(`
+    // Find the reason for why the dependency is installed. If it is installed
+    // because of a devDependency then that is okay. Warn when it is installed
+    // because of a dependency: a native package found in node_modules only
+    // needs warning when it is a direct production dependency of the root
+    // package (previously checked via the package manager's `ls --json` command).
+    const filteredRootDependencies = allNativeDeps.filter(
+        (rootDependency) => dependenciesKeys.includes(rootDependency) && !excludePackages.includes(rootDependency)
+    )
+    if (filteredRootDependencies.length > 0) {
+        const plural = filteredRootDependencies.length > 1
+        console.log(`
  ${chalk.whiteBright.bgYellow.bold('Webpack does not work with native dependencies.')}
 ${chalk.bold(filteredRootDependencies.join(', '))} ${
-                plural ? 'are native dependencies' : 'is a native dependency'
-            } and should be installed inside of the "./release/app" folder.
+            plural ? 'are native dependencies' : 'is a native dependency'
+        } and should be installed inside of the "./release/app" folder.
  First, uninstall the packages from "./package.json":
-${chalk.whiteBright.bgGreen.bold('pnpm remove your-package')}
+${chalk.whiteBright.bgGreen.bold('bun remove your-package')}
  ${chalk.bold('Then, instead of installing the package to the root "./package.json":')}
-${chalk.whiteBright.bgRed.bold('pnpm add your-package')}
+${chalk.whiteBright.bgRed.bold('bun add your-package')}
  ${chalk.bold('Install the package to "./release/app/package.json"')}
-${chalk.whiteBright.bgGreen.bold('cd ./release/app && pnpm add your-package')}
+${chalk.whiteBright.bgGreen.bold('cd ./release/app && bun add your-package')}
  Read more about native dependencies at:
 ${chalk.bold('https://electron-react-boilerplate.js.org/docs/adding-dependencies/#module-structure')}
  `)
-            process.exit(1)
-        }
-    } catch (e) {
-        console.log('Native dependencies could not be checked:', e.message)
+        process.exit(1)
     }
 }

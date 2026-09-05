@@ -79,7 +79,7 @@ if (keys.length === 0) {
 
 const nextScanText = replaceGeneratedBlock(scanText, keys)
 if (checkOnly && nextScanText !== scanText) {
-  console.error(`${scanPath} is out of sync with ${errorsPath}. Run pnpm run sync:error-i18n-keys.`)
+  console.error(`${scanPath} is out of sync with ${errorsPath}. Run bun run sync:error-i18n-keys.`)
   process.exit(1)
 }
 

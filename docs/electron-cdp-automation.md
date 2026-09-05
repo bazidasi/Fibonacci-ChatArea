@@ -6,10 +6,10 @@ Chatbox 桌面端基于 Electron 26 (Chromium 116)，通过 Chrome DevTools Prot
 
 ```bash
 # 标准启动（使用用户默认数据目录）
-pnpm exec electron-vite dev -- --remote-debugging-port=9333
+bunx electron-vite dev -- --remote-debugging-port=9333
 
 # 使用独立数据目录（推荐用于测试/截图）
-pnpm exec electron-vite dev -- --remote-debugging-port=9333 --user-data-dir=/tmp/chatbox-test
+bunx electron-vite dev -- --remote-debugging-port=9333 --user-data-dir=/tmp/chatbox-test
 ```
 
 > **注意**: `ELECTRON_EXTRA_LAUNCH_ARGS` 环境变量不可靠，始终使用 `--` 分隔符传参。
@@ -103,7 +103,7 @@ await sleep(3000) // 额外等待 React hydration 完成
 
 ```bash
 # 1. 用默认目录启动一次
-pnpm exec electron-vite dev -- --user-data-dir=/tmp/chatbox-base
+bunx electron-vite dev -- --user-data-dir=/tmp/chatbox-base
 # 2. 等应用加载完后关闭
 # 3. 复制作为模板
 cp /tmp/chatbox-base/config.json /tmp/chatbox-test/config.json

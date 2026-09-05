@@ -57,7 +57,7 @@ Electron Builder 配置(`electron-builder.yml`)关键项:
 
 ## 2. Mobile(Android + iOS)——`resources/`
 
-由 `pnpm mobile:assets`(`npx capacitor-assets generate --ios --android`)从 `resources/` 生成两端的图标和启动屏。**与 `assets/` 完全独立。**
+由 `bun run mobile:assets`(`npx capacitor-assets generate --ios --android`)从 `resources/` 生成两端的图标和启动屏。**与 `assets/` 完全独立。**
 
 | 源文件 (1024 / 2732) | 生成目标 | 平台 |
 |------|------|------|
@@ -88,7 +88,7 @@ Web/renderer 的图标独立于桌面端,在 `src/renderer/`:
 | 平台 | 目录 | 工具/约定 |
 |------|------|-----------|
 | Desktop | `assets/` | electron-builder buildResources + `main.ts` 运行时加载 |
-| Mobile(iOS/Android) | `resources/` | `pnpm mobile:assets`(capacitor-assets) |
+| Mobile(iOS/Android) | `resources/` | `bun run mobile:assets`(capacitor-assets) |
 | Web | `src/renderer/` | `index.html` 直接引用 |
 
 改某个平台的图标只动它对应的目录即可,互不影响。
