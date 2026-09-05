@@ -445,15 +445,16 @@ function Index() {
   return (
     <Page title="">
       <div className="p-0 flex flex-col h-full min-h-0 overflow-hidden">
-        {/* flex + my-auto below keeps the hero centered when it fits and lets it
-            scroll from the top (instead of clipping the top) when it overflows */}
+        {/* Top-anchored hero (per the reference composition): the orb starts
+            ~8% down the viewport and the composer area below holds its ground.
+            Natural document flow keeps overflow scrolling instead of clipping. */}
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-md">
           {showNewUserScenarios ? (
             <Stack className="my-auto w-full" py="xl">
               <NewUserScenarioGrid scenarios={newUserScenarios} onSelect={handleScenarioSelect} />
             </Stack>
           ) : (
-            <Stack align="center" gap="lg" className="my-auto w-full py-xl" px="md">
+            <Stack align="center" gap="lg" className="w-full pt-14 pb-6" px="md">
               {/* glowing brand orb, echoing the app splash mark */}
               <Slide direction="down" offset={18}>
                 <Box className="relative flex items-center justify-center" w={96} h={96}>

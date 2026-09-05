@@ -51,17 +51,19 @@
   --chatbox-border-success: #10a37f;
   --chatbox-border-brand: var(--chatbox-brand);
 
-  /* neumorphic surface — one material for the whole app */
+  /* neumorphic surface — one material for the whole app.
+     Shadows are translucent and tight: soft material depth without
+     the muddy dual-glow of full-strength neumorphism. */
   --neo-surface: #e4e9f1;
   --neo-surface-raised: #e9edf5;
-  --neo-shadow-dark: #c2c9d6;
-  --neo-shadow-light: #ffffff;
+  --neo-shadow-dark: rgba(164, 174, 192, 0.55);
+  --neo-shadow-light: rgba(255, 255, 255, 0.9);
 
-  --neo-shadow-outset-xs: 2px 2px 5px var(--neo-shadow-dark), -2px -2px 5px var(--neo-shadow-light);
-  --neo-shadow-outset-sm: 4px 4px 9px var(--neo-shadow-dark), -4px -4px 9px var(--neo-shadow-light);
-  --neo-shadow-outset-lg: 9px 9px 20px var(--neo-shadow-dark), -9px -9px 20px var(--neo-shadow-light);
-  --neo-shadow-inset-sm: inset 2px 2px 5px var(--neo-shadow-dark), inset -2px -2px 5px var(--neo-shadow-light);
-  --neo-shadow-inset: inset 4px 4px 9px var(--neo-shadow-dark), inset -4px -4px 9px var(--neo-shadow-light);
+  --neo-shadow-outset-xs: 1px 1px 3px var(--neo-shadow-dark), -1px -1px 3px var(--neo-shadow-light);
+  --neo-shadow-outset-sm: 3px 3px 7px var(--neo-shadow-dark), -3px -3px 7px var(--neo-shadow-light);
+  --neo-shadow-outset-lg: 6px 6px 14px var(--neo-shadow-dark), -6px -6px 14px var(--neo-shadow-light);
+  --neo-shadow-inset-sm: inset 1px 1px 3px var(--neo-shadow-dark), inset -1px -1px 3px var(--neo-shadow-light);
+  --neo-shadow-inset: inset 3px 3px 7px var(--neo-shadow-dark), inset -3px -3px 7px var(--neo-shadow-light);
 
   --chatbox-background-primary: var(--neo-surface);
   --chatbox-background-primary-hover: #dfe5ee;
@@ -157,17 +159,19 @@
   --chatbox-border-success: #3ddbb0;
   --chatbox-border-brand: var(--chatbox-brand);
 
-  /* neumorphic surface — one material for the whole app */
+  /* neumorphic surface — one material for the whole app.
+     Dark theme: low-alpha shadows keep the material subtle instead
+     of the heavy muddy dual-glow. */
   --neo-surface: #262b35;
   --neo-surface-raised: #2c313d;
-  --neo-shadow-dark: #1b1f27;
-  --neo-shadow-light: #343b49;
+  --neo-shadow-dark: rgba(13, 16, 21, 0.45);
+  --neo-shadow-light: rgba(70, 79, 96, 0.35);
 
-  --neo-shadow-outset-xs: 2px 2px 5px var(--neo-shadow-dark), -2px -2px 5px var(--neo-shadow-light);
-  --neo-shadow-outset-sm: 4px 4px 9px var(--neo-shadow-dark), -4px -4px 9px var(--neo-shadow-light);
-  --neo-shadow-outset-lg: 9px 9px 20px var(--neo-shadow-dark), -9px -9px 20px var(--neo-shadow-light);
-  --neo-shadow-inset-sm: inset 2px 2px 5px var(--neo-shadow-dark), inset -2px -2px 5px var(--neo-shadow-light);
-  --neo-shadow-inset: inset 4px 4px 9px var(--neo-shadow-dark), inset -4px -4px 9px var(--neo-shadow-light);
+  --neo-shadow-outset-xs: 1px 1px 3px var(--neo-shadow-dark), -1px -1px 3px var(--neo-shadow-light);
+  --neo-shadow-outset-sm: 3px 3px 7px var(--neo-shadow-dark), -3px -3px 7px var(--neo-shadow-light);
+  --neo-shadow-outset-lg: 6px 6px 14px var(--neo-shadow-dark), -6px -6px 14px var(--neo-shadow-light);
+  --neo-shadow-inset-sm: inset 1px 1px 3px var(--neo-shadow-dark), inset -1px -1px 3px var(--neo-shadow-light);
+  --neo-shadow-inset: inset 3px 3px 7px var(--neo-shadow-dark), inset -3px -3px 7px var(--neo-shadow-light);
 
   --chatbox-background-primary: var(--neo-surface);
   --chatbox-background-primary-hover: #22262f;
@@ -326,6 +330,13 @@ ul[data-sidebar='menu-sub'] > li {
     0 6px 28px -6px rgba(0, 0, 0, 0.55),
     0 0 0 1.5px color-mix(in srgb, var(--chatbox-brand) 55%, transparent),
     0 0 0 6px color-mix(in srgb, var(--chatbox-brand) 12%, transparent);
+}
+
+/* The well's magenta glow is the focus indicator — the textarea itself must
+   not draw its own rectangular :focus-visible outline (autofocus shows it). */
+.chatbox-input-surface textarea:focus,
+.chatbox-input-surface textarea:focus-visible {
+  outline: none;
 }
 
 /* circular send / stop button in the composer */

@@ -113,7 +113,10 @@ html {
   box-shadow: var(--neo-shadow-inset-sm);
 }
 
-/* ---------- Inputs (inset wells) ---------- */
+/* ---------- Inputs (inset wells) ----------
+   Generic inputs keep the soft inset well, EXCEPT inside the chat
+   composer: the reference composer is a flat surface inside the
+   raised well, so textareas there opt out via .chatbox-input-surface. */
 .mantine-Input-input {
   background: var(--neo-surface);
   border: none;
@@ -136,12 +139,29 @@ textarea.mantine-Input-input {
   background: var(--neo-surface);
 }
 
-/* ---------- Modal / Drawer ---------- */
+/* chat composer: flat text surface, no rectangular inset well */
+.chatbox-input-surface .mantine-Input-input,
+.chatbox-input-surface textarea.mantine-Input-input,
+.chatbox-input-surface .mantine-Textarea-input {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.chatbox-input-surface .mantine-Input-input:focus,
+.chatbox-input-surface .mantine-Input-input:focus-within {
+  border: none;
+  box-shadow: none;
+}
+
+/* ---------- Modal / Drawer ----------
+   Floating overlays read as elevation, not extrusion — plain soft
+   drop shadow instead of the dual neumorphic pair. */
 .mantine-Modal-content,
 .mantine-Drawer-content {
   background: var(--neo-surface);
-  border: none;
-  box-shadow: var(--neo-shadow-outset-lg);
+  border: 1px solid var(--chatbox-border-primary);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
 }
 
 .mantine-Modal-header,
@@ -156,14 +176,16 @@ textarea.mantine-Input-input {
   backdrop-filter: blur(3px);
 }
 
-/* ---------- Dropdowns: Menu, Popover, Select, Combobox, Tooltip ---------- */
+/* ---------- Dropdowns: Menu, Popover, Select, Combobox ----------
+   Floating overlays get a plain elevation shadow (no neumorphic
+   extrusion) so they detach cleanly from the surface beneath. */
 .mantine-Menu-dropdown,
 .mantine-Popover-dropdown,
 .mantine-Combobox-dropdown,
 .mantine-Select-dropdown {
   background: var(--neo-surface-raised);
-  border: none;
-  box-shadow: var(--neo-shadow-outset-lg);
+  border: 1px solid var(--chatbox-border-primary);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.16);
 }
 
 .mantine-Menu-item,
@@ -179,8 +201,8 @@ textarea.mantine-Input-input {
 .mantine-Tooltip-tooltip {
   background: var(--neo-surface-raised);
   color: var(--chatbox-tint-primary);
-  border: none;
-  box-shadow: var(--neo-shadow-outset-sm);
+  border: 1px solid var(--chatbox-border-primary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
 /* ---------- SegmentedControl ---------- */
