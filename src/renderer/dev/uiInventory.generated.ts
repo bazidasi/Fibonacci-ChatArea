@@ -10098,7 +10098,7 @@ export const uiInventoryItems: UiInventoryItem[] = [
       'Search path, component, state, variant, or text',
       'States',
       'Stories',
-      'Storybook links require `pnpm storybook` on port 6006.',
+      'Storybook links require `bun run storybook` on port 6006.',
       'Text',
       'UI Inventory',
       'UI TSX files',

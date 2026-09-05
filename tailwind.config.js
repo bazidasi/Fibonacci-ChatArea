@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin');
+
 module.exports = {
   darkMode: ['class'],
   content: ['./src/renderer/**/*.{js,jsx,ts,tsx}'],
@@ -145,6 +147,8 @@ module.exports = {
       animation: {
         'fade-in': 'fadeIn 1s ease-out',
         flash: 'flash 0.5s ease-in-out 2',
+        'collapsible-down': 'collapsible-down 0.2s ease-out',
+        'collapsible-up': 'collapsible-up 0.2s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -155,10 +159,32 @@ module.exports = {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.3' },
         },
+        'collapsible-down': {
+          from: { height: '0' },
+          to: {
+            height: 'var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto))',
+          },
+        },
+        'collapsible-up': {
+          from: {
+            height: 'var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto))',
+          },
+          to: { height: '0' },
+        },
       },
     },
   },
-  plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwind-scrollbar'),
+    plugin(({ addVariant }) => {
+      addVariant('data-open', '&:where([data-state="open"], [data-open]:not([data-open="false"]))');
+      addVariant(
+        'data-closed',
+        '&:where([data-state="closed"], [data-closed]:not([data-closed="false"]))'
+      );
+    }),
+  ],
   corePlugins: {
     preflight: false,
   },

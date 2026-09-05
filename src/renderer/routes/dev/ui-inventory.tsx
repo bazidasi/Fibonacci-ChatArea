@@ -365,7 +365,7 @@ function ComponentPreview({ item }: { item: UiInventoryItem }) {
               onSelect={(link) => setActivePreviewHref(getPreviewFrameHref(link))}
             />
             <Text size="xs" c="dimmed">
-              Storybook links require `pnpm storybook` on port 6006.
+              Storybook links require `bun run storybook` on port 6006.
             </Text>
           </Stack>
         </Paper>
