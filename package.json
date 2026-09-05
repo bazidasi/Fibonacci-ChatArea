@@ -96,7 +96,7 @@
     "@ai-sdk/openai-compatible": "^2.0.62",
     "@ai-sdk/perplexity": "^3.0.47",
     "@ai-sdk/provider": "^3.0.14",
-    "@assistant-ui/react": "^0.15.17",
+    "@assistant-ui/react": "0.15.18",
     "@assistant-ui/react-markdown": "^0.14.13",
     "@babel/core": "^7.28.0",
     "@babel/plugin-transform-class-static-block": "^7.27.1",
