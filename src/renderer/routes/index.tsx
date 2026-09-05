@@ -15,7 +15,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconCode,
-  IconListDetails,
   IconMessageCircle2Filled,
   IconPhoto,
   IconPresentation,
@@ -31,19 +30,16 @@ import { z } from 'zod'
 import { trackJkClickEvent } from '@/analytics/jk'
 import { JK_EVENTS, JK_PAGE_NAMES } from '@/analytics/jk-events'
 import { rendererApplication } from '@/app/renderer-application'
-import { ChatboxWelcomeCard } from '@/components/common/ChatboxWelcomeCard'
+import { Button as MotionButton } from '@/components/animate-ui/primitives/buttons/button'
+import { Fade, Fades } from '@/components/animate-ui/primitives/effects/fade'
+import { Slide, Slides } from '@/components/animate-ui/primitives/effects/slide'
 import { ScalableIcon } from '@/components/common/ScalableIcon'
 import { ImageInStorage } from '@/components/Image'
 import InputBox, { type InputBoxPayload } from '@/components/InputBox/InputBox'
-import { Button as MotionButton } from '@/components/animate-ui/primitives/buttons/button'
-import { Fades, Fade } from '@/components/animate-ui/primitives/effects/fade'
-import { Slide, Slides } from '@/components/animate-ui/primitives/effects/slide'
 import Page from '@/components/layout/Page'
 import { getForceShowNewUserScenarioCardsFlag } from '@/dev/devToolsFlags'
 import { useMyCopilots, useRemoteCopilotsByCursor } from '@/hooks/useCopilots'
-import { useProviders } from '@/hooks/useProviders'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import useVersion from '@/hooks/useVersion'
 import * as remote from '@/packages/remote'
 import { router } from '@/router'
 import { useAuthInfoStore } from '@/stores/authInfoStore'
@@ -56,7 +52,6 @@ import { submitNewUserMessage } from '@/stores/session/messages'
 import { initEmptyChatSession } from '@/stores/sessionHelpers'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { useUIStore } from '@/stores/uiStore'
-import { getHomeWelcomeCardMode } from '@/utils/homeWelcomeCard'
 import { NewUserScenarioGrid } from './-new-user-scenarios/NewUserScenarioGrid'
 import { type NewUserScenario, newUserScenarios, resolveNewUserScenarioContent } from './-new-user-scenarios/scenarios'
 
@@ -110,26 +105,12 @@ function Index() {
   )
   const hasUserSelectedModelRef = useRef(false)
 
-  const { providers } = useProviders()
   const defaultChatModel = useSettingsStore((s) => s.defaultChatModel)
-  const hasLicense = useSettingsStore((s) => Boolean(s.licenseKey))
   const licenseKey = useSettingsStore((s) => s.licenseKey)
   const licenseDetail = useSettingsStore((s) => s.licenseDetail)
   const licensePlanName = useSettingsStore((s) => s.licensePlanName)
   const hasExpiredLicense = useSettingsStore((s) => s.hasExpiredLicense)
   const isLoggedIn = useAuthInfoStore((s) => Boolean(s.accessToken && s.refreshToken))
-  const { isExceeded, isExceededResolved } = useVersion()
-  const welcomeCardMode = useMemo(
-    () =>
-      getHomeWelcomeCardMode({
-        providerCount: providers.length,
-        isLoggedIn,
-        hasLicense,
-        hasExpiredLicense,
-        hideForStoreReview: isExceeded || !isExceededResolved,
-      }),
-    [providers.length, isLoggedIn, hasLicense, hasExpiredLicense, isExceeded, isExceededResolved]
-  )
 
   const selectedModel = useMemo(() => {
     if (session.settings?.provider && session.settings?.modelId) {
@@ -464,21 +445,24 @@ function Index() {
   return (
     <Page title="">
       <div className="p-0 flex flex-col h-full min-h-0 overflow-hidden">
-        <div
-          className={clsx('min-h-0 flex-1 overflow-y-auto', welcomeCardMode !== 'none' ? 'pb-36 sm:pb-32' : 'pb-md')}
-        >
+        {/* flex + my-auto below keeps the hero centered when it fits and lets it
+            scroll from the top (instead of clipping the top) when it overflows */}
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-md">
           {showNewUserScenarios ? (
-            <Stack justify="center" className="min-h-full" py="xl">
+            <Stack className="my-auto w-full" py="xl">
               <NewUserScenarioGrid scenarios={newUserScenarios} onSelect={handleScenarioSelect} />
             </Stack>
           ) : (
-            <Stack align="center" justify="center" gap="md" className="min-h-full" px="md">
+            <Stack align="center" gap="lg" className="my-auto w-full py-xl" px="md">
               {/* glowing brand orb, echoing the app splash mark */}
               <Slide direction="down" offset={18}>
                 <Box className="relative flex items-center justify-center" w={96} h={96}>
                   <Box
                     className="absolute inset-0 rounded-full blur-2xl"
-                    style={{ background: 'radial-gradient(circle, rgba(255,63,174,0.5) 0%, rgba(168,85,247,0.25) 55%, transparent 75%)' }}
+                    style={{
+                      background:
+                        'radial-gradient(circle, rgba(255,63,174,0.5) 0%, rgba(168,85,247,0.25) 55%, transparent 75%)',
+                    }}
                   />
                   <Box
                     className="relative h-20 w-20 rounded-full"
@@ -494,7 +478,7 @@ function Index() {
 
               <Slide direction="up" offset={16} delay={90}>
                 <Stack align="center" gap={6}>
-                  <Text fw={700} size={isSmallScreen ? 'md' : 'xl'} ta="center">
+                  <Text fw={700} size={isSmallScreen ? 'lg' : 'xl'} ta="center">
                     {t('What can I help you with today?')}
                   </Text>
                   <span className="h-[3px] w-10 rounded-full bg-gradient-to-r from-chatbox-tint-brand to-[#ff77c8]" />
@@ -507,35 +491,30 @@ function Index() {
               </Slide>
 
               {!isSmallScreen && (
-                <Fades delay={180} holdDelay={80}>
-                  <MotionButton
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => router.navigate({ to: '/image-creator' })}
-                    className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
-                  >
-                    <ScalableIcon icon={IconPhoto} size={16} className="text-chatbox-tint-brand" />
-                    {t('Create Image')}
-                  </MotionButton>
-                  <MotionButton
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => setQuote(t('Brainstorm creative ideas with me about '))}
-                    className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
-                  >
-                    <ScalableIcon icon={IconBrain} size={16} className="text-chatbox-tint-brand" />
-                    {t('Brainstorm')}
-                  </MotionButton>
-                  <MotionButton
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => setQuote(t('Help me make a plan for '))}
-                    className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
-                  >
-                    <ScalableIcon icon={IconListDetails} size={16} className="text-chatbox-tint-brand" />
-                    {t('Make a plan')}
-                  </MotionButton>
-                </Fades>
+                <Box mt={16}>
+                  {/* inView: the last pill sits right at the scroll clip on load,
+                      where the intersection observer mis-fires — animate on mount */}
+                  <Fades inView delay={180} holdDelay={80}>
+                    <MotionButton
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => router.navigate({ to: '/image-creator' })}
+                      className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
+                    >
+                      <ScalableIcon icon={IconPhoto} size={16} className="text-chatbox-tint-brand" />
+                      {t('Create Image')}
+                    </MotionButton>
+                    <MotionButton
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => setQuote(t('Brainstorm creative ideas with me about '))}
+                      className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
+                    >
+                      <ScalableIcon icon={IconBrain} size={16} className="text-chatbox-tint-brand" />
+                      {t('Brainstorm')}
+                    </MotionButton>
+                  </Fades>
+                </Box>
               )}
             </Stack>
           )}
@@ -580,24 +559,7 @@ function Index() {
             )
           )}
 
-          <Box className="relative">
-            {welcomeCardMode !== 'none' && (
-              <Box
-                className="pointer-events-none absolute left-0 right-0 z-10"
-                style={{ bottom: '100%' }}
-                px="sm"
-                mb="sm"
-              >
-                <Box className={widthFull ? 'w-full' : 'w-full max-w-4xl mx-auto'}>
-                  <ChatboxWelcomeCard
-                    mode={welcomeCardMode}
-                    pageName={JK_PAGE_NAMES.CHAT_PAGE}
-                    className="pointer-events-auto w-full"
-                  />
-                </Box>
-              </Box>
-            )}
-
+          <Box>
             <InputBox
               sessionType="chat"
               sessionId="new"

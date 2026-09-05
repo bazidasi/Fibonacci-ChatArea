@@ -173,7 +173,7 @@ function ReasoningTrigger({
         data-slot="reasoning-trigger-chevron"
         className={cn(
           'aui-reasoning-trigger-chevron mt-0.5 size-4 shrink-0',
-          'transition-transform duration-[var(--animation-duration)] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
+          'transition-transform [transition-duration:var(--animation-duration)] [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
           '-rotate-90',
           'group-data-[state=open]/trigger:rotate-0',
           'group-data-[panel-open]/trigger:rotate-0'
@@ -191,7 +191,7 @@ function ReasoningContent({ className, children, ...props }: React.ComponentProp
       data-slot="reasoning-content"
       className={cn(
         'aui-reasoning-content text-muted-foreground relative overflow-hidden text-sm outline-none',
-        'group/collapsible-content ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
+        'group/collapsible-content [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
         'data-closed:animate-collapsible-up',
         'data-open:animate-collapsible-down',
         'data-closed:fill-mode-forwards',
@@ -259,7 +259,7 @@ function ReasoningText({ className, children, ...props }: React.ComponentProps<'
       data-slot="reasoning-text"
       className={cn(
         'aui-reasoning-text relative z-0 max-h-64 overflow-y-auto ps-6 pt-2 pb-2 leading-relaxed text-pretty',
-        'transform-gpu transition-[transform,opacity] ease-[cubic-bezier(0.32,0.72,0,1)]',
+        'transform-gpu transition-[transform,opacity] [transition-timing-function:cubic-bezier(0.32,0.72,0,1)]',
         'motion-reduce:animate-none',
         'group-data-[state=open]/collapsible-content:animate-in',
         'group-data-[state=closed]/collapsible-content:animate-out',

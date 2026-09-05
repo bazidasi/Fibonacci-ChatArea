@@ -119,7 +119,7 @@ function ToolGroupTrigger({
         data-slot="tool-group-trigger-chevron"
         className={cn(
           'aui-tool-group-trigger-chevron size-3 shrink-0',
-          'transition-transform duration-[var(--animation-duration)] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
+          'transition-transform [transition-duration:var(--animation-duration)] [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
           '-rotate-90',
           'group-data-[state=open]/trigger:rotate-0',
           'group-data-[panel-open]/trigger:rotate-0'
@@ -135,7 +135,7 @@ function ToolGroupContent({ className, children, ...props }: React.ComponentProp
       data-slot="tool-group-content"
       className={cn(
         'aui-tool-group-content relative overflow-hidden text-sm outline-none',
-        'group/collapsible-content ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
+        'group/collapsible-content [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
         'data-closed:animate-collapsible-up',
         'data-open:animate-collapsible-down',
         'data-closed:fill-mode-forwards',
@@ -151,7 +151,7 @@ function ToolGroupContent({ className, children, ...props }: React.ComponentProp
           'group-data-[variant=ghost]/tool-group-root:mt-1 group-data-[variant=ghost]/tool-group-root:gap-1',
           'group-data-[variant=outline]/tool-group-root:mt-3 group-data-[variant=outline]/tool-group-root:border-t group-data-[variant=outline]/tool-group-root:px-4 group-data-[variant=outline]/tool-group-root:pt-3',
           'group-data-[variant=muted]/tool-group-root:mt-3 group-data-[variant=muted]/tool-group-root:border-t group-data-[variant=muted]/tool-group-root:px-4 group-data-[variant=muted]/tool-group-root:pt-3',
-          '[&>*]:animate-in [&>*]:fade-in-0 [&>*]: [&>*]:slide-in-from-top-1 [&>*]:[animation-duration:var(--animation-duration)] [&>*]:ease-[cubic-bezier(0.32,0.72,0,1)]',
+          '[&>*]:animate-in [&>*]:fade-in-0 [&>*]: [&>*]:slide-in-from-top-1 [&>*]:[animation-duration:var(--animation-duration)] [&>*]:[transition-timing-function:cubic-bezier(0.32,0.72,0,1)]',
           '[&>*]:motion-reduce:animate-none',
           '[&>*:nth-child(2)]:[animation-delay:40ms]',
           '[&>*:nth-child(3)]:[animation-delay:80ms]',

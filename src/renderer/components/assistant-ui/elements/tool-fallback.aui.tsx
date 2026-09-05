@@ -152,7 +152,7 @@ function ToolFallbackTrigger({
         data-slot="tool-fallback-trigger-chevron"
         className={cn(
           'aui-tool-fallback-trigger-chevron size-4 shrink-0',
-          'transition-transform duration-[var(--animation-duration)] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
+          'transition-transform [transition-duration:var(--animation-duration)] [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
           '-rotate-90',
           'group-data-[state=open]/trigger:rotate-0',
           'group-data-[panel-open]/trigger:rotate-0'
@@ -168,7 +168,7 @@ function ToolFallbackContent({ className, children, ...props }: React.ComponentP
       data-slot="tool-fallback-content"
       className={cn(
         'aui-tool-fallback-content relative overflow-hidden text-sm outline-none',
-        'group/collapsible-content ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
+        'group/collapsible-content [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
         'data-closed:animate-collapsible-up',
         'data-open:animate-collapsible-down',
         'data-closed:fill-mode-forwards',
@@ -180,7 +180,7 @@ function ToolFallbackContent({ className, children, ...props }: React.ComponentP
     >
       <div
         className={cn(
-          'flex flex-col gap-2 ps-6 pt-1 pb-2 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
+          'flex flex-col gap-2 ps-6 pt-1 pb-2 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-reduce:animate-none',
           'group-data-[state=open]/collapsible-content:animate-in group-data-[state=open]/collapsible-content:fade-in-0 group-data-[state=open]/collapsible-content: group-data-[state=open]/collapsible-content:slide-in-from-top-1',
           'group-data-[state=closed]/collapsible-content:animate-out group-data-[state=closed]/collapsible-content:fade-out-0 group-data-[state=closed]/collapsible-content: group-data-[state=closed]/collapsible-content:slide-out-to-top-1',
           'group-data-[state=closed]/collapsible-content:[animation-duration:var(--animation-duration)] group-data-[state=open]/collapsible-content:[animation-duration:var(--animation-duration)]'
