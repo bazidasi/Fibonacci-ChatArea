@@ -12,6 +12,7 @@ import {
   Input,
   type MantineColorsTuple,
   MantineProvider,
+  Menu,
   Modal,
   NativeSelect,
   Popover,

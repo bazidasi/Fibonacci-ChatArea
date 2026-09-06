@@ -505,7 +505,9 @@ div[data-vaul-drawer] {
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  animation: chatbox-approval-ring-spin 2.5s linear infinite;
+  /* Two laps (5s) to match HIGHLIGHT_DURATION_MS in approvalAttentionStore:
+     bounded even if the class lingers, instead of relying on JS cleanup. */
+  animation: chatbox-approval-ring-spin 2.5s linear 2;
   pointer-events: none;
 }
 
