@@ -30,7 +30,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
-  useSidebar,
 } from '@/components/ui/sidebar'
 import { AppTooltip as Tooltip } from '@/components/ui/tooltip'
 import { isRTL } from '@/i18n/locales'
@@ -90,22 +89,6 @@ export default function Sidebar() {
   const { needRoomForMacWindowControls } = useNeedRoomForMacWinControls()
 
   const isRtlLayout = isRTL(language)
-
-  // shadcn sidebar context (inside SidebarProvider) — keeps the mobile Sheet
-  // in sync with the app-wide showSidebar uiStore state.
-  const sidebar = useSidebar()
-
-  useEffect(() => {
-    if (sidebar.isMobile && sidebar.openMobile !== showSidebar) {
-      sidebar.setOpenMobile(showSidebar)
-    }
-  }, [showSidebar, sidebar.isMobile, sidebar.openMobile, sidebar.setOpenMobile])
-
-  useEffect(() => {
-    if (sidebar.isMobile && sidebar.openMobile !== showSidebar) {
-      setShowSidebar(sidebar.openMobile)
-    }
-  }, [sidebar.openMobile, sidebar.isMobile, showSidebar, setShowSidebar])
 
   // GSAP: soft staggered entrance for the sidebar regions marked with data-neo-anim
   useEffect(() => {

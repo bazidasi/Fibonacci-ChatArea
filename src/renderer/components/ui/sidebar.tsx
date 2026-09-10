@@ -95,12 +95,21 @@ const SidebarProvider = React.forwardRef<
       [setOpenProp, open]
     )
 
+    // A controlled provider (open/onOpenChange owned by the app) already holds the
+    // drawer state, so the mobile Sheet must read and write that same state. Keeping
+    // a second `openMobile` mirror here means the two only reconcile through effects,
+    // and since each effect writes the other's source the drawer flips open/closed on
+    // every commit.
+    const isControlled = openProp !== undefined
+    const sheetOpen = isControlled ? open : openMobile
+    const setSheetOpen = isControlled ? setOpen : setOpenMobile
+
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
       return isMobile
-        ? setOpenMobile((open) => !open)
+        ? setSheetOpen((open) => !open)
         : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
+    }, [isMobile, setOpen, setSheetOpen])
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -128,11 +137,11 @@ const SidebarProvider = React.forwardRef<
         open,
         setOpen,
         isMobile,
-        openMobile,
-        setOpenMobile,
+        openMobile: sheetOpen,
+        setOpenMobile: setSheetOpen,
         toggleSidebar,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [state, open, setOpen, isMobile, sheetOpen, setSheetOpen, toggleSidebar]
     )
 
     return (

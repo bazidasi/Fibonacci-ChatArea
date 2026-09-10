@@ -492,7 +492,7 @@ function Index() {
               </Slide>
 
               {!isSmallScreen && (
-                <Box mt={16}>
+                <Flex mt={16} justify="center" gap="sm">
                   {/* inView: the last pill sits right at the scroll clip on load,
                       where the intersection observer mis-fires — animate on mount */}
                   <Fades inView delay={180} holdDelay={80}>
@@ -515,7 +515,7 @@ function Index() {
                       {t('Brainstorm')}
                     </MotionButton>
                   </Fades>
-                </Box>
+                </Flex>
               )}
             </Stack>
           )}
