@@ -3,8 +3,21 @@ import { getSubmitAvailability } from '@chatbox/core/session/action-gates'
 import { isActionAvailableInMode, resolveSessionMode } from '@chatbox/core/session/mode-policy'
 import NiceModal from '@ebay/nice-modal-react'
 import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom'
-import { ActionIcon, Box, Button, Flex, Loader, Menu, Stack, Text, Textarea, UnstyledButton } from '@mantine/core'
-import { useViewportSize } from '@mantine/hooks'
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Flex,
+  Loader,
+  Menu,
+  Stack,
+  Text,
+  Textarea,
+  UnstyledButton,
+  useComputedColorScheme,
+} from '@mantine/core'
+import { useReducedMotion, useViewportSize } from '@mantine/hooks'
+import { MetalFx } from 'metal-fx'
 import { TestId } from '@shared/automation/testids'
 import {
   getFileAcceptConfig,
@@ -218,6 +231,8 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
     const modelRegistryVersion = useModelRegistryVersion()
 
     const { t } = useTranslation()
+    const colorScheme = useComputedColorScheme('light')
+    const reducedMotion = useReducedMotion()
     const navigate = useNavigate()
     const isSmallScreen = useIsSmallScreen()
     const toolbarIconSize = isSmallScreen ? 22 : 18
@@ -1520,541 +1535,557 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
               <PendingActionBar session={currentSession} />
             </ErrorBoundary>
           )}
-          <BorderBeam size="sm" colorVariant="mono" strength={0.6} active theme="dark">
-          <Box
-            ref={skillMenuAnchorRef}
-            className={cn(
-              // min-h + justify-between 必须同层，桌面空输入时工具栏贴底
-              INPUT_SURFACE_CLASS_NAME,
-              !isSmallScreen && INPUT_SURFACE_MIN_HEIGHT_CLASS_NAME,
-              // Kept mounted while a pause takes over the slot so the draft,
-              // attachments and autosized height survive the swap.
-              pauseTakeover && 'hidden'
-            )}
-            style={INPUT_SURFACE_STYLE}
+          <BorderBeam
+            size="md"
+            colorVariant="colorful"
+            strength={pauseTakeover ? 0 : 0.7}
+            active={!reducedMotion && !pauseTakeover}
+            theme={colorScheme}
+            borderRadius={24}
+            className="w-full min-w-0"
           >
-            {/*
+            <Box
+              ref={skillMenuAnchorRef}
+              className={cn(
+                // min-h + justify-between 必须同层，桌面空输入时工具栏贴底
+                INPUT_SURFACE_CLASS_NAME,
+                !isSmallScreen && INPUT_SURFACE_MIN_HEIGHT_CLASS_NAME,
+                // Kept mounted while a pause takes over the slot so the draft,
+                // attachments and autosized height survive the swap.
+                pauseTakeover && 'hidden'
+              )}
+              style={INPUT_SURFACE_STYLE}
+            >
+              {/*
               skill 列表：Portal + Floating UI autoUpdate
               - 不撑高 InputBox；逃出 overflow-hidden
               - 持续跟随 anchor（含双向 resize / 纯 position 过渡）
               - size middleware 按可用高度限 maxHeight
             */}
-            {skillMenuOpen &&
-              createPortal(
-                <Box
-                  ref={skillMenuFloatingRef}
-                  className="z-[400] overflow-y-auto rounded-lg border border-solid border-chatbox-border-primary bg-chatbox-background-primary py-1 shadow-lg"
-                  style={{ position: 'fixed', top: 0, left: 0 }}
-                >
-                  {matchingInputSkills.map((skill, index) => (
-                    <UnstyledButton
-                      key={skill.name}
-                      className={cn(
-                        'flex w-full items-start gap-2 px-2 py-1.5 text-left transition-colors',
-                        index === skillCommandSelectedIndex
-                          ? 'bg-chatbox-background-tertiary'
-                          : 'hover:bg-chatbox-background-tertiary'
-                      )}
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => insertSkillCommand(skill.name)}
-                    >
-                      <IconWand
-                        size={14}
-                        strokeWidth={1.8}
-                        className="mt-0.5 shrink-0 text-[var(--chatbox-tint-secondary)]"
-                      />
-                      <Stack gap={1} className="min-w-0 flex-1">
-                        <Text size="sm" truncate c="chatbox-primary">
-                          /{skill.name}
-                        </Text>
-                        {skill.description && (
-                          <Text size="xs" c="chatbox-secondary" lineClamp={1}>
-                            {skill.description}
-                          </Text>
+              {skillMenuOpen &&
+                createPortal(
+                  <Box
+                    ref={skillMenuFloatingRef}
+                    className="z-[400] overflow-y-auto rounded-lg border border-solid border-chatbox-border-primary bg-chatbox-background-primary py-1 shadow-lg"
+                    style={{ position: 'fixed', top: 0, left: 0 }}
+                  >
+                    {matchingInputSkills.map((skill, index) => (
+                      <UnstyledButton
+                        key={skill.name}
+                        className={cn(
+                          'flex w-full items-start gap-2 px-2 py-1.5 text-left transition-colors',
+                          index === skillCommandSelectedIndex
+                            ? 'bg-chatbox-background-tertiary'
+                            : 'hover:bg-chatbox-background-tertiary'
                         )}
-                      </Stack>
-                    </UnstyledButton>
-                  ))}
-                </Box>,
-                document.body
-              )}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => insertSkillCommand(skill.name)}
+                      >
+                        <IconWand
+                          size={14}
+                          strokeWidth={1.8}
+                          className="mt-0.5 shrink-0 text-[var(--chatbox-tint-secondary)]"
+                        />
+                        <Stack gap={1} className="min-w-0 flex-1">
+                          <Text size="sm" truncate c="chatbox-primary">
+                            /{skill.name}
+                          </Text>
+                          {skill.description && (
+                            <Text size="xs" c="chatbox-secondary" lineClamp={1}>
+                              {skill.description}
+                            </Text>
+                          )}
+                        </Stack>
+                      </UnstyledButton>
+                    ))}
+                  </Box>,
+                  document.body
+                )}
 
-            {/* Work Mode status row: approval policy + working directories, always visible
+              {/* Work Mode status row: approval policy + working directories, always visible
                 above the input with their own in-place menus (mirrors the mode panel). */}
-            {platform.isDesktopLike && agentModeUIState.isActive && (
-              <WorkModeStatusRow
-                sessionId={currentSessionId || 'new'}
-                providerId={model?.provider}
-                modelId={model?.modelId}
-              />
-            )}
-
-            {/* Input Row */}
-            <Flex align="flex-end" gap={4}>
-              <MessageInputField
-                ref={messageInputFieldRef}
-                isNewSession={isNewSession}
-                viewportHeight={viewportHeight}
-                isReadOnly={submitAvailability.blockReason !== undefined}
-                placeholder={
-                  composerPlaceholder.kind === 'locked'
-                    ? getSessionLockNotice(composerPlaceholder.reason, t)
-                    : composerPlaceholder.kind === 'queue'
-                      ? t('Type a message, press Enter to queue it') || ''
-                      : t('Type your question here...') || ''
-                }
-                ariaLabel={t('Type your question here...') || ''}
-                autoFocus={!isSmallScreen}
-                onValueChange={onMessageInputValueChange}
-                onUserInput={onUserInput}
-                onKeyDown={onKeyDown}
-                onPaste={onPaste}
-              />
-            </Flex>
-
-            {(!!pictureKeys.length || !!attachments.length) && (
-              <Flex
-                align="center"
-                wrap="wrap"
-                className="max-h-[30vh] overflow-y-auto"
-                onClick={() => dom.focusMessageInput()}
-              >
-                {showSessionRetrievalToolWarning && (
-                  <Flex
-                    role="status"
-                    aria-live="polite"
-                    align="center"
-                    gap={8}
-                    className="w-full rounded-lg px-2.5 py-2 mb-1"
-                    style={{
-                      border: '1px solid var(--chatbox-border-primary)',
-                      borderLeft: '3px solid var(--chatbox-tint-warning)',
-                      background: 'var(--chatbox-background-primary)',
-                    }}
-                  >
-                    <Box
-                      className="flex items-center justify-center rounded-full shrink-0"
-                      style={{
-                        width: 20,
-                        height: 20,
-                        background: 'var(--chatbox-background-secondary)',
-                        color: 'var(--chatbox-tint-warning)',
-                      }}
-                    >
-                      <ScalableIcon icon={IconAlertCircle} size={14} />
-                    </Box>
-                    <Text size="xs" lh={1.35} c="chatbox-warning" className="min-w-0">
-                      {t(
-                        'This model may not be able to read the uploaded document. Try another model if you want to ask about the file.'
-                      )}
-                    </Text>
-                  </Flex>
-                )}
-                {hasLargeAttachmentWarning && (
-                  <Flex
-                    role="status"
-                    aria-live="polite"
-                    align="center"
-                    gap={8}
-                    className="w-full rounded-lg px-2.5 py-2 mb-1"
-                    style={{
-                      border: '1px solid var(--chatbox-border-primary)',
-                      borderLeft: '3px solid var(--chatbox-tint-warning)',
-                      background: 'var(--chatbox-background-primary)',
-                    }}
-                  >
-                    <Box
-                      className="flex items-center justify-center rounded-full shrink-0"
-                      style={{
-                        width: 20,
-                        height: 20,
-                        background: 'var(--chatbox-background-secondary)',
-                        color: 'var(--chatbox-tint-warning)',
-                      }}
-                    >
-                      <ScalableIcon icon={IconAlertCircle} size={14} />
-                    </Box>
-                    <Text size="xs" lh={1.35} c="chatbox-warning" className="min-w-0">
-                      {t(
-                        'This attachment is very large and may consume more points. You can send it anyway, or remove it and use a smaller file.'
-                      )}
-                    </Text>
-                  </Flex>
-                )}
-                {pictureKeys?.map((picKey) => (
-                  <ImageMiniCard key={picKey} storageKey={picKey} onDelete={() => onImageDeleteClick(picKey)} />
-                ))}
-                {attachments?.map((file) => {
-                  const fileKey = StorageKeyGenerator.fileUniqKey(file)
-                  const status = preConstructedMessage.preprocessingStatus.files[fileKey]
-                  const preprocessedFile = preConstructedMessage.preprocessedFiles.find(
-                    (f) => StorageKeyGenerator.fileUniqKey(f.file) === fileKey
-                  )
-                  const effectiveIndexStatus = preprocessedFile?.sessionAttachmentId
-                    ? (preprocessedAttachmentIndexStatusMap.get(preprocessedFile.sessionAttachmentId) ??
-                      preprocessedFile.sessionAttachmentIndexStatus)
-                    : preprocessedFile?.sessionAttachmentIndexStatus
-                  const effectiveAttachmentError = preprocessedFile?.sessionAttachmentId
-                    ? preprocessedAttachmentErrorMap.has(preprocessedFile.sessionAttachmentId)
-                      ? preprocessedAttachmentErrorMap.get(preprocessedFile.sessionAttachmentId)
-                      : preprocessedFile?.error
-                    : preprocessedFile?.error
-                  const attachmentResumable = preprocessedFile?.sessionAttachmentId
-                    ? (preprocessedAttachmentResumableMap.get(preprocessedFile.sessionAttachmentId) ??
-                      preprocessedFile.sessionAttachmentResumable)
-                    : preprocessedFile?.sessionAttachmentResumable
-                  const recoveryAction =
-                    effectiveIndexStatus === 'failed' && attachmentResumable !== undefined
-                      ? attachmentResumable
-                        ? 'continue'
-                        : 'retry'
-                      : undefined
-                  const attachmentProgress = preprocessedFile?.sessionAttachmentId
-                    ? preprocessedAttachmentProgressMap.get(preprocessedFile.sessionAttachmentId)
-                    : undefined
-                  const totalChunks =
-                    attachmentProgress?.totalChunks ?? preprocessedFile?.sessionAttachmentTotalChunks ?? 0
-                  const embeddedChunks =
-                    attachmentProgress?.embeddedChunks ?? preprocessedFile?.sessionAttachmentEmbeddedChunks ?? 0
-                  const indexingStage =
-                    attachmentProgress?.indexingStage ?? preprocessedFile?.sessionAttachmentIndexingStage
-                  const progressValue = getSessionAttachmentProgressValue(embeddedChunks, totalChunks)
-                  const isSessionAttachmentTakingLong =
-                    !!attachmentProgress?.processingStartedAt &&
-                    effectiveIndexStatus !== 'ready' &&
-                    Date.now() - attachmentProgress.processingStartedAt > 30000
-                  const statusText =
-                    preprocessedFile?.ragMode === 'session-retrieval' && effectiveIndexStatus === 'failed'
-                      ? totalChunks > 0
-                        ? `${t('Indexing failed')} · ${embeddedChunks}/${totalChunks} ${t('chunks')}`
-                        : t('Indexing failed')
-                      : preprocessedFile?.ragMode === 'session-retrieval' && effectiveIndexStatus !== 'ready'
-                        ? progressValue !== undefined
-                          ? `${isSessionAttachmentTakingLong ? t('Still indexing') : getSessionAttachmentStageLabel(indexingStage, t)} · ${progressValue}%`
-                          : isSessionAttachmentTakingLong
-                            ? t('Still indexing')
-                            : getSessionAttachmentStageLabel(indexingStage, t)
-                        : status === 'processing'
-                          ? t('Preparing')
-                          : undefined
-                  return (
-                    <FileMiniCard
-                      key={fileKey}
-                      name={file.name}
-                      fileType={file.type}
-                      status={
-                        effectiveIndexStatus === 'failed' || effectiveAttachmentError
-                          ? 'error'
-                          : preprocessedFile?.ragMode === 'session-retrieval'
-                            ? effectiveIndexStatus === 'ready'
-                              ? 'completed'
-                              : 'processing'
-                            : status
-                      }
-                      statusText={statusText}
-                      parserType={preprocessedFile?.parserType}
-                      progressValue={progressValue}
-                      isTakingLong={isSessionAttachmentTakingLong}
-                      errorMessage={effectiveAttachmentError}
-                      recoveryAction={recoveryAction}
-                      onRecover={
-                        preprocessedFile?.sessionAttachmentId && recoveryAction
-                          ? () => recoverPreprocessedAttachment(preprocessedFile.sessionAttachmentId as number)
-                          : undefined
-                      }
-                      recovering={
-                        preprocessedFile?.sessionAttachmentId
-                          ? recoveringPreprocessedAttachmentIds.includes(preprocessedFile.sessionAttachmentId)
-                          : false
-                      }
-                      onErrorClick={() => {
-                        const errorCode = effectiveAttachmentError
-                        if (errorCode) {
-                          void NiceModal.show('file-parse-error', {
-                            errorCode,
-                            fileName: file.name,
-                          })
-                        }
-                      }}
-                      onPreviewClick={
-                        preprocessedFile?.storageKey
-                          ? () => {
-                              const parserLabel = getParserTypeLabel(preprocessedFile?.parserType, t)
-                              void NiceModal.show('content-viewer', {
-                                title: `${t('File Content')}: ${file.name}`,
-                                storageKey: preprocessedFile.storageKey,
-                                metadata: parserLabel ? [{ value: parserLabel }] : undefined,
-                              })
-                            }
-                          : undefined
-                      }
-                      onDelete={() => {
-                        const fileKeysToRemove = new Set([fileKey])
-                        // Cancel any ongoing MinerU parsing for this file
-                        const filePath = platform.getLocalFilePath(file)
-                        fileKeysToRemove.add(StorageKeyGenerator.fileUniqKey(file))
-                        for (const key of fileKeysToRemove) {
-                          activeFilePreprocessingKeysRef.current.delete(key)
-                        }
-                        if (filePath && platform.cancelMineruParse) {
-                          platform.cancelMineruParse(filePath).catch(() => {
-                            // Ignore cancellation errors
-                          })
-                        }
-                        if (platform.isDesktopLike && preprocessedFile?.sessionAttachmentId) {
-                          void platform
-                            .getSessionAttachmentRagController()
-                            .deleteAttachment(preprocessedFile.sessionAttachmentId)
-                            .catch(() => {
-                              // Ignore cancellation errors
-                            })
-                        }
-                        setPreConstructedMessage((prev) =>
-                          cleanupFile(prev, file, { fileKeys: fileKeysToRemove, removeAttachment: true })
-                        )
-                      }}
-                    />
-                  )
-                })}
-              </Flex>
-            )}
-
-            {/* Toolbar Row */}
-            <Flex align="center" gap={0} className="shrink-0 w-full" justify="space-between">
-              {/* Hidden file inputs */}
-              <ImageUploadInput
-                ref={pictureInputRef}
-                onChange={onFileInputChange}
-                testId={TestId.chat.attachmentImageInput}
-              />
-              <input
-                data-testid={TestId.chat.attachmentFileInput}
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={onFileInputChange}
-                multiple
-                accept={isAgentModeActive ? undefined : getFileAcceptString()}
-              />
-
-              {/* Left Group: Tool Buttons */}
-              <Liquid blur={6} contrast={18} fill="#e4e9f1" className="flex items-center gap-0">
-                <AttachmentMenu onImageUploadClick={onImageUploadClick} onFileUploadClick={onFileUploadClick} t={t} />
-
-                <ReasoningControlButton
-                  provider={model?.provider}
-                  model={reasoningModelInfo}
-                  providerOptions={effectiveProviderOptions}
-                  iconSize={toolbarIconSize}
-                  onChange={(level) => void handleReasoningLevelChange(level)}
-                />
-
-                <AgentModeButton
+              {platform.isDesktopLike && agentModeUIState.isActive && (
+                <WorkModeStatusRow
                   sessionId={currentSessionId || 'new'}
                   providerId={model?.provider}
                   modelId={model?.modelId}
-                  iconSize={toolbarIconSize}
-                  compact={isSmallScreen}
-                  modelSupportsAgentMode={model ? modelSupportsAgentMode : true}
-                  webBrowsingMode={webBrowsingMode}
-                  onWebBrowsingChange={(v) => {
-                    setWebBrowsingMode(v)
-                    dom.focusMessageInput()
-                  }}
-                  currentKnowledgeBaseId={knowledgeBase?.id}
-                  onKnowledgeBaseSelect={handleKnowledgeBaseSelect}
-                  onSkillSelect={insertSkillCommand}
-                  draftCopilotId={draftCopilotId}
-                  draftCopilotName={draftCopilotName}
+                />
+              )}
+
+              {/* Input Row */}
+              <Flex align="flex-end" gap={4}>
+                <MessageInputField
+                  ref={messageInputFieldRef}
+                  isNewSession={isNewSession}
+                  viewportHeight={viewportHeight}
+                  isReadOnly={submitAvailability.blockReason !== undefined}
+                  placeholder={
+                    composerPlaceholder.kind === 'locked'
+                      ? getSessionLockNotice(composerPlaceholder.reason, t)
+                      : composerPlaceholder.kind === 'queue'
+                        ? t('Type a message, press Enter to queue it') || ''
+                        : t('Type your question here...') || ''
+                  }
+                  ariaLabel={t('Type your question here...') || ''}
+                  autoFocus={!isSmallScreen}
+                  onValueChange={onMessageInputValueChange}
+                  onUserInput={onUserInput}
+                  onKeyDown={onKeyDown}
+                  onPaste={onPaste}
+                />
+              </Flex>
+
+              {(!!pictureKeys.length || !!attachments.length) && (
+                <Flex
+                  align="center"
+                  wrap="wrap"
+                  className="max-h-[30vh] overflow-y-auto"
+                  onClick={() => dom.focusMessageInput()}
+                >
+                  {showSessionRetrievalToolWarning && (
+                    <Flex
+                      role="status"
+                      aria-live="polite"
+                      align="center"
+                      gap={8}
+                      className="w-full rounded-lg px-2.5 py-2 mb-1"
+                      style={{
+                        border: '1px solid var(--chatbox-border-primary)',
+                        borderLeft: '3px solid var(--chatbox-tint-warning)',
+                        background: 'var(--chatbox-background-primary)',
+                      }}
+                    >
+                      <Box
+                        className="flex items-center justify-center rounded-full shrink-0"
+                        style={{
+                          width: 20,
+                          height: 20,
+                          background: 'var(--chatbox-background-secondary)',
+                          color: 'var(--chatbox-tint-warning)',
+                        }}
+                      >
+                        <ScalableIcon icon={IconAlertCircle} size={14} />
+                      </Box>
+                      <Text size="xs" lh={1.35} c="chatbox-warning" className="min-w-0">
+                        {t(
+                          'This model may not be able to read the uploaded document. Try another model if you want to ask about the file.'
+                        )}
+                      </Text>
+                    </Flex>
+                  )}
+                  {hasLargeAttachmentWarning && (
+                    <Flex
+                      role="status"
+                      aria-live="polite"
+                      align="center"
+                      gap={8}
+                      className="w-full rounded-lg px-2.5 py-2 mb-1"
+                      style={{
+                        border: '1px solid var(--chatbox-border-primary)',
+                        borderLeft: '3px solid var(--chatbox-tint-warning)',
+                        background: 'var(--chatbox-background-primary)',
+                      }}
+                    >
+                      <Box
+                        className="flex items-center justify-center rounded-full shrink-0"
+                        style={{
+                          width: 20,
+                          height: 20,
+                          background: 'var(--chatbox-background-secondary)',
+                          color: 'var(--chatbox-tint-warning)',
+                        }}
+                      >
+                        <ScalableIcon icon={IconAlertCircle} size={14} />
+                      </Box>
+                      <Text size="xs" lh={1.35} c="chatbox-warning" className="min-w-0">
+                        {t(
+                          'This attachment is very large and may consume more points. You can send it anyway, or remove it and use a smaller file.'
+                        )}
+                      </Text>
+                    </Flex>
+                  )}
+                  {pictureKeys?.map((picKey) => (
+                    <ImageMiniCard key={picKey} storageKey={picKey} onDelete={() => onImageDeleteClick(picKey)} />
+                  ))}
+                  {attachments?.map((file) => {
+                    const fileKey = StorageKeyGenerator.fileUniqKey(file)
+                    const status = preConstructedMessage.preprocessingStatus.files[fileKey]
+                    const preprocessedFile = preConstructedMessage.preprocessedFiles.find(
+                      (f) => StorageKeyGenerator.fileUniqKey(f.file) === fileKey
+                    )
+                    const effectiveIndexStatus = preprocessedFile?.sessionAttachmentId
+                      ? (preprocessedAttachmentIndexStatusMap.get(preprocessedFile.sessionAttachmentId) ??
+                        preprocessedFile.sessionAttachmentIndexStatus)
+                      : preprocessedFile?.sessionAttachmentIndexStatus
+                    const effectiveAttachmentError = preprocessedFile?.sessionAttachmentId
+                      ? preprocessedAttachmentErrorMap.has(preprocessedFile.sessionAttachmentId)
+                        ? preprocessedAttachmentErrorMap.get(preprocessedFile.sessionAttachmentId)
+                        : preprocessedFile?.error
+                      : preprocessedFile?.error
+                    const attachmentResumable = preprocessedFile?.sessionAttachmentId
+                      ? (preprocessedAttachmentResumableMap.get(preprocessedFile.sessionAttachmentId) ??
+                        preprocessedFile.sessionAttachmentResumable)
+                      : preprocessedFile?.sessionAttachmentResumable
+                    const recoveryAction =
+                      effectiveIndexStatus === 'failed' && attachmentResumable !== undefined
+                        ? attachmentResumable
+                          ? 'continue'
+                          : 'retry'
+                        : undefined
+                    const attachmentProgress = preprocessedFile?.sessionAttachmentId
+                      ? preprocessedAttachmentProgressMap.get(preprocessedFile.sessionAttachmentId)
+                      : undefined
+                    const totalChunks =
+                      attachmentProgress?.totalChunks ?? preprocessedFile?.sessionAttachmentTotalChunks ?? 0
+                    const embeddedChunks =
+                      attachmentProgress?.embeddedChunks ?? preprocessedFile?.sessionAttachmentEmbeddedChunks ?? 0
+                    const indexingStage =
+                      attachmentProgress?.indexingStage ?? preprocessedFile?.sessionAttachmentIndexingStage
+                    const progressValue = getSessionAttachmentProgressValue(embeddedChunks, totalChunks)
+                    const isSessionAttachmentTakingLong =
+                      !!attachmentProgress?.processingStartedAt &&
+                      effectiveIndexStatus !== 'ready' &&
+                      Date.now() - attachmentProgress.processingStartedAt > 30000
+                    const statusText =
+                      preprocessedFile?.ragMode === 'session-retrieval' && effectiveIndexStatus === 'failed'
+                        ? totalChunks > 0
+                          ? `${t('Indexing failed')} · ${embeddedChunks}/${totalChunks} ${t('chunks')}`
+                          : t('Indexing failed')
+                        : preprocessedFile?.ragMode === 'session-retrieval' && effectiveIndexStatus !== 'ready'
+                          ? progressValue !== undefined
+                            ? `${isSessionAttachmentTakingLong ? t('Still indexing') : getSessionAttachmentStageLabel(indexingStage, t)} · ${progressValue}%`
+                            : isSessionAttachmentTakingLong
+                              ? t('Still indexing')
+                              : getSessionAttachmentStageLabel(indexingStage, t)
+                          : status === 'processing'
+                            ? t('Preparing')
+                            : undefined
+                    return (
+                      <FileMiniCard
+                        key={fileKey}
+                        name={file.name}
+                        fileType={file.type}
+                        status={
+                          effectiveIndexStatus === 'failed' || effectiveAttachmentError
+                            ? 'error'
+                            : preprocessedFile?.ragMode === 'session-retrieval'
+                              ? effectiveIndexStatus === 'ready'
+                                ? 'completed'
+                                : 'processing'
+                              : status
+                        }
+                        statusText={statusText}
+                        parserType={preprocessedFile?.parserType}
+                        progressValue={progressValue}
+                        isTakingLong={isSessionAttachmentTakingLong}
+                        errorMessage={effectiveAttachmentError}
+                        recoveryAction={recoveryAction}
+                        onRecover={
+                          preprocessedFile?.sessionAttachmentId && recoveryAction
+                            ? () => recoverPreprocessedAttachment(preprocessedFile.sessionAttachmentId as number)
+                            : undefined
+                        }
+                        recovering={
+                          preprocessedFile?.sessionAttachmentId
+                            ? recoveringPreprocessedAttachmentIds.includes(preprocessedFile.sessionAttachmentId)
+                            : false
+                        }
+                        onErrorClick={() => {
+                          const errorCode = effectiveAttachmentError
+                          if (errorCode) {
+                            void NiceModal.show('file-parse-error', {
+                              errorCode,
+                              fileName: file.name,
+                            })
+                          }
+                        }}
+                        onPreviewClick={
+                          preprocessedFile?.storageKey
+                            ? () => {
+                                const parserLabel = getParserTypeLabel(preprocessedFile?.parserType, t)
+                                void NiceModal.show('content-viewer', {
+                                  title: `${t('File Content')}: ${file.name}`,
+                                  storageKey: preprocessedFile.storageKey,
+                                  metadata: parserLabel ? [{ value: parserLabel }] : undefined,
+                                })
+                              }
+                            : undefined
+                        }
+                        onDelete={() => {
+                          const fileKeysToRemove = new Set([fileKey])
+                          // Cancel any ongoing MinerU parsing for this file
+                          const filePath = platform.getLocalFilePath(file)
+                          fileKeysToRemove.add(StorageKeyGenerator.fileUniqKey(file))
+                          for (const key of fileKeysToRemove) {
+                            activeFilePreprocessingKeysRef.current.delete(key)
+                          }
+                          if (filePath && platform.cancelMineruParse) {
+                            platform.cancelMineruParse(filePath).catch(() => {
+                              // Ignore cancellation errors
+                            })
+                          }
+                          if (platform.isDesktopLike && preprocessedFile?.sessionAttachmentId) {
+                            void platform
+                              .getSessionAttachmentRagController()
+                              .deleteAttachment(preprocessedFile.sessionAttachmentId)
+                              .catch(() => {
+                                // Ignore cancellation errors
+                              })
+                          }
+                          setPreConstructedMessage((prev) =>
+                            cleanupFile(prev, file, { fileKeys: fileKeysToRemove, removeAttachment: true })
+                          )
+                        }}
+                      />
+                    )
+                  })}
+                </Flex>
+              )}
+
+              {/* Toolbar Row */}
+              <Flex align="center" gap={0} className="shrink-0 w-full" justify="space-between">
+                {/* Hidden file inputs */}
+                <ImageUploadInput
+                  ref={pictureInputRef}
+                  onChange={onFileInputChange}
+                  testId={TestId.chat.attachmentImageInput}
+                />
+                <input
+                  data-testid={TestId.chat.attachmentFileInput}
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={onFileInputChange}
+                  multiple
+                  accept={isAgentModeActive ? undefined : getFileAcceptString()}
                 />
 
-                {!isSmallScreen &&
-                  canCreateThread &&
-                  (showRollbackThreadButton ? (
-                    <Tooltip label={t('Rollback Thread')} position="top" withArrow>
+                {/* Left Group: Tool Buttons */}
+                <Liquid blur={6} contrast={18} fill="#e4e9f1" className="flex items-center gap-0">
+                  <AttachmentMenu onImageUploadClick={onImageUploadClick} onFileUploadClick={onFileUploadClick} t={t} />
+
+                  <ReasoningControlButton
+                    provider={model?.provider}
+                    model={reasoningModelInfo}
+                    providerOptions={effectiveProviderOptions}
+                    iconSize={toolbarIconSize}
+                    onChange={(level) => void handleReasoningLevelChange(level)}
+                  />
+
+                  <AgentModeButton
+                    sessionId={currentSessionId || 'new'}
+                    providerId={model?.provider}
+                    modelId={model?.modelId}
+                    iconSize={toolbarIconSize}
+                    compact={isSmallScreen}
+                    modelSupportsAgentMode={model ? modelSupportsAgentMode : true}
+                    webBrowsingMode={webBrowsingMode}
+                    onWebBrowsingChange={(v) => {
+                      setWebBrowsingMode(v)
+                      dom.focusMessageInput()
+                    }}
+                    currentKnowledgeBaseId={knowledgeBase?.id}
+                    onKnowledgeBaseSelect={handleKnowledgeBaseSelect}
+                    onSkillSelect={insertSkillCommand}
+                    draftCopilotId={draftCopilotId}
+                    draftCopilotName={draftCopilotName}
+                  />
+
+                  {!isSmallScreen &&
+                    canCreateThread &&
+                    (showRollbackThreadButton ? (
+                      <Tooltip label={t('Rollback Thread')} position="top" withArrow>
+                        <UnstyledButton
+                          data-testid={TestId.chat.rollbackThread}
+                          aria-label={t('Rollback Thread')}
+                          onClick={rollbackThread}
+                          className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors"
+                        >
+                          <IconArrowBackUp
+                            size={toolbarIconSize}
+                            strokeWidth={1.8}
+                            className="text-[var(--chatbox-tint-secondary)]"
+                          />
+                        </UnstyledButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip label={t('New Thread')} position="top" withArrow>
+                        <UnstyledButton
+                          data-testid={TestId.chat.newThread}
+                          aria-label={t('New Thread')}
+                          onClick={startNewThread}
+                          disabled={!onStartNewThread}
+                          className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors disabled:opacity-50"
+                        >
+                          <IconFilePencil
+                            size={toolbarIconSize}
+                            strokeWidth={1.8}
+                            className="text-[var(--chatbox-tint-secondary)]"
+                          />
+                        </UnstyledButton>
+                      </Tooltip>
+                    ))}
+
+                  {!isSmallScreen && (
+                    <Tooltip label={t('Conversation Settings')} position="top" withArrow>
                       <UnstyledButton
-                        data-testid={TestId.chat.rollbackThread}
-                        aria-label={t('Rollback Thread')}
-                        onClick={rollbackThread}
-                        className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors"
-                      >
-                        <IconArrowBackUp
-                          size={toolbarIconSize}
-                          strokeWidth={1.8}
-                          className="text-[var(--chatbox-tint-secondary)]"
-                        />
-                      </UnstyledButton>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip label={t('New Thread')} position="top" withArrow>
-                      <UnstyledButton
-                        data-testid={TestId.chat.newThread}
-                        aria-label={t('New Thread')}
-                        onClick={startNewThread}
-                        disabled={!onStartNewThread}
+                        data-testid={TestId.chat.sessionSettings}
+                        aria-label={t('Conversation Settings') || undefined}
+                        onClick={onClickSessionSettings}
+                        disabled={!onClickSessionSettings}
                         className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors disabled:opacity-50"
                       >
-                        <IconFilePencil
+                        <IconAdjustmentsHorizontal
                           size={toolbarIconSize}
                           strokeWidth={1.8}
                           className="text-[var(--chatbox-tint-secondary)]"
                         />
                       </UnstyledButton>
                     </Tooltip>
-                  ))}
+                  )}
 
-                {!isSmallScreen && (
-                  <Tooltip label={t('Conversation Settings')} position="top" withArrow>
-                    <UnstyledButton
-                      data-testid={TestId.chat.sessionSettings}
-                      aria-label={t('Conversation Settings') || undefined}
-                      onClick={onClickSessionSettings}
-                      disabled={!onClickSessionSettings}
-                      className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors disabled:opacity-50"
-                    >
-                      <IconAdjustmentsHorizontal
-                        size={toolbarIconSize}
-                        strokeWidth={1.8}
-                        className="text-[var(--chatbox-tint-secondary)]"
-                      />
-                    </UnstyledButton>
-                  </Tooltip>
-                )}
+                  {isSmallScreen && (
+                    <ComposerSettingsMenu
+                      canCreateThread={canCreateThread}
+                      toolbarIconSize={toolbarIconSize}
+                      onStartNewThread={startNewThread}
+                      onClickSessionSettings={onClickSessionSettings}
+                    />
+                  )}
+                </Liquid>
 
-                {isSmallScreen && (
-                  <ComposerSettingsMenu
-                    canCreateThread={canCreateThread}
-                    toolbarIconSize={toolbarIconSize}
-                    onStartNewThread={startNewThread}
-                    onClickSessionSettings={onClickSessionSettings}
-                  />
-                )}
-              </Liquid>
-
-              {/* Right Group: Token Count + Model Selector */}
-              <Flex align="center" gap={0} className="min-w-0 ml-auto">
-                <TokenCountMenu
-                  currentInputTokens={currentInputTokens}
-                  contextTokens={contextTokens}
-                  totalTokens={totalTokens}
-                  isCalculating={isCalculating}
-                  isCurrentInputApproximate={isCurrentInputApproximate}
-                  isTotalApproximate={isTotalApproximate}
-                  isContextApproximate={isContextApproximate}
-                  isContextCalculating={isContextCalculating}
-                  pendingContextMessages={pendingContextMessages}
-                  totalContextMessages={messageCount}
-                  contextWindow={effectiveContextWindow ?? undefined}
-                  currentMessageCount={currentContextMessageIds?.length ?? 0}
-                  maxContextMessageCount={currentSessionMergedSettings?.maxContextMessageCount}
-                  onCompressClick={sessionId && !isNewSession ? () => setShowCompressionModal(true) : undefined}
-                  autoCompactionEnabled={autoCompactionEnabled}
-                  isCompacting={isCompacting}
-                  contextWindowKnown={contextWindowKnown}
-                  onAutoCompactionChange={sessionId && !isNewSession ? handleAutoCompactionChange : undefined}
-                >
-                  <Flex
-                    align="center"
-                    gap="2"
-                    className={`shrink-0 text-xs cursor-pointer hover:text-chatbox-tint-secondary transition-colors px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] ${
-                      tokenPercentage && tokenPercentage > 80 ? 'text-red-500' : 'text-chatbox-tint-tertiary'
-                    }`}
+                {/* Right Group: Token Count + Model Selector */}
+                <Flex align="center" gap={0} className="min-w-0 ml-auto">
+                  <TokenCountMenu
+                    currentInputTokens={currentInputTokens}
+                    contextTokens={contextTokens}
+                    totalTokens={totalTokens}
+                    isCalculating={isCalculating}
+                    isCurrentInputApproximate={isCurrentInputApproximate}
+                    isTotalApproximate={isTotalApproximate}
+                    isContextApproximate={isContextApproximate}
+                    isContextCalculating={isContextCalculating}
+                    pendingContextMessages={pendingContextMessages}
+                    totalContextMessages={messageCount}
+                    contextWindow={effectiveContextWindow ?? undefined}
+                    currentMessageCount={currentContextMessageIds?.length ?? 0}
+                    maxContextMessageCount={currentSessionMergedSettings?.maxContextMessageCount}
+                    onCompressClick={sessionId && !isNewSession ? () => setShowCompressionModal(true) : undefined}
+                    autoCompactionEnabled={autoCompactionEnabled}
+                    isCompacting={isCompacting}
+                    contextWindowKnown={contextWindowKnown}
+                    onAutoCompactionChange={sessionId && !isNewSession ? handleAutoCompactionChange : undefined}
                   >
-                    <ScalableIcon icon={IconArrowUp} size={14} />
-                    {isCalculating && <Loader size={10} />}
-                    <Text span size="xs" className="whitespace-nowrap" c="inherit">
-                      {isTotalApproximate ? '~' : ''}
-                      {formatNumber(totalTokens)}
-                      {tokenPercentage !== null && tokenPercentage > 10 && ` (${tokenPercentage}%)`}
-                    </Text>
-                  </Flex>
-                </TokenCountMenu>
-
-                {/* Model Selector */}
-                <Box className="min-w-0 flex-1 justify-end max-w-[200px]">
-                  <ModelSelectorV2
-                    onSelect={handleSelectModel}
-                    selectedProviderId={model?.provider}
-                    selectedModelId={model?.modelId}
-                    modelDisabledCheck={modelDisabledCheck}
-                    pageName={JK_PAGE_NAMES.CHAT_PAGE}
-                    position="top-end"
-                    transitionProps={{
-                      transition: 'fade-up',
-                      duration: 200,
-                    }}
-                  >
-                    <UnstyledButton
-                      className={cn(
-                        'flex min-w-0 max-w-full items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors',
-                        !model && 'animate-pulse bg-blue-500/20'
-                      )}
+                    <Flex
+                      align="center"
+                      gap="2"
+                      className={`shrink-0 text-xs cursor-pointer hover:text-chatbox-tint-secondary transition-colors px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] ${
+                        tokenPercentage && tokenPercentage > 80 ? 'text-red-500' : 'text-chatbox-tint-tertiary'
+                      }`}
                     >
-                      {!!model && <ProviderImageIcon size={18} provider={model.provider} />}
-                      <Text
-                        size="sm"
-                        data-testid={TestId.model.selectorTrigger}
+                      <ScalableIcon icon={IconArrowUp} size={14} />
+                      {isCalculating && <Loader size={10} />}
+                      <Text span size="xs" className="whitespace-nowrap" c="inherit">
+                        {isTotalApproximate ? '~' : ''}
+                        {formatNumber(totalTokens)}
+                        {tokenPercentage !== null && tokenPercentage > 10 && ` (${tokenPercentage}%)`}
+                      </Text>
+                    </Flex>
+                  </TokenCountMenu>
+
+                  {/* Model Selector */}
+                  <Box className="min-w-0 flex-1 justify-end max-w-[200px]">
+                    <ModelSelectorV2
+                      onSelect={handleSelectModel}
+                      selectedProviderId={model?.provider}
+                      selectedModelId={model?.modelId}
+                      modelDisabledCheck={modelDisabledCheck}
+                      pageName={JK_PAGE_NAMES.CHAT_PAGE}
+                      position="top-end"
+                      transitionProps={{
+                        transition: 'fade-up',
+                        duration: 200,
+                      }}
+                    >
+                      <UnstyledButton
                         className={cn(
-                          'min-w-0 flex-1 truncate text-[var(--chatbox-tint-secondary)]',
-                          isSmallScreen ? 'max-w-[100px]' : 'max-w-[160px]'
+                          'flex min-w-0 max-w-full items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--chatbox-background-tertiary)] transition-colors',
+                          !model && 'animate-pulse bg-blue-500/20'
                         )}
                       >
-                        {modelSelectorDisplayText}
-                      </Text>
-                      <IconChevronRight
-                        size={14}
-                        className="text-[var(--chatbox-tint-tertiary)] rotate-90 flex-shrink-0"
-                      />
-                    </UnstyledButton>
-                  </ModelSelectorV2>
-                </Box>
+                        {!!model && <ProviderImageIcon size={18} provider={model.provider} />}
+                        <Text
+                          size="sm"
+                          data-testid={TestId.model.selectorTrigger}
+                          className={cn(
+                            'min-w-0 flex-1 truncate text-[var(--chatbox-tint-secondary)]',
+                            isSmallScreen ? 'max-w-[100px]' : 'max-w-[160px]'
+                          )}
+                        >
+                          {modelSelectorDisplayText}
+                        </Text>
+                        <IconChevronRight
+                          size={14}
+                          className="text-[var(--chatbox-tint-tertiary)] rotate-90 flex-shrink-0"
+                        />
+                      </UnstyledButton>
+                    </ModelSelectorV2>
+                  </Box>
 
-                {/* Send / Stop — rightmost control in the toolbar row, like the
+                  {/* Send / Stop — rightmost control in the toolbar row, like the
                     reference composer (circle button after the model selector). */}
-                <Tooltip
-                  // `n` rather than `count`, so i18next does not engage plural resolution for a
-                  // label that is only ever shown for more than one reply.
-                  label={
-                    submitControl === 'queue'
-                      ? t('Will send after the current response finishes')
-                      : generatingCount > 1
-                        ? t('Stop all {{n}} replies', { n: generatingCount })
-                        : t('Stop')
-                  }
-                  disabled={submitControl === 'send'}
-                  withArrow
-                >
-                  <ActionIcon
-                    data-testid={
-                      submitControl === 'stop'
-                        ? TestId.chat.stop
-                        : submitControl === 'queue'
-                          ? TestId.chat.queuedMessageEnqueue
-                          : TestId.chat.send
-                    }
-                    disabled={submitBlocked && !showingStopControl}
-                    size={36}
-                    variant="filled"
-                    color={showingStopControl ? 'dark' : 'chatbox-brand'}
-                    onClick={showingStopControl ? onStopGenerating : () => handleSubmit()}
-                    className={cn(
-                      'chatbox-send-button shrink-0 ml-1',
-                      !showingStopControl && submitBlocked && 'disabled:!opacity-100 !text-white'
-                    )}
-                    style={
-                      !showingStopControl && submitBlocked ? { backgroundColor: 'rgba(222, 226, 230, 1)' } : undefined
-                    }
+                  <MetalFx
+                    preset="chromatic"
+                    variant="circle"
+                    innerShadow
+                    theme={colorScheme}
+                    strength={submitBlocked && !showingStopControl ? 0.15 : 0.8}
+                    paused={reducedMotion || (submitBlocked && !showingStopControl)}
+                    disableGlow={reducedMotion || (submitBlocked && !showingStopControl)}
+                    normalizeHostStyles={false}
+                    className="shrink-0 ml-1"
+                    style={{ background: 'var(--chatbox-background-secondary)', color: 'var(--chatbox-tint-primary)' }}
                   >
-                    {showingStopControl ? (
-                      <ScalableIcon icon={IconPlayerStopFilled} size={16} />
-                    ) : (
-                      <ScalableIcon icon={IconArrowUp} size={16} />
-                    )}
-                  </ActionIcon>
-                </Tooltip>
+                    <Tooltip
+                      // `n` rather than `count`, so i18next does not engage plural resolution for a
+                      // label that is only ever shown for more than one reply.
+                      label={
+                        submitControl === 'queue'
+                          ? t('Will send after the current response finishes')
+                          : generatingCount > 1
+                            ? t('Stop all {{n}} replies', { n: generatingCount })
+                            : t('Stop')
+                      }
+                      disabled={submitControl === 'send'}
+                      withArrow
+                    >
+                      <ActionIcon
+                        data-testid={
+                          submitControl === 'stop'
+                            ? TestId.chat.stop
+                            : submitControl === 'queue'
+                              ? TestId.chat.queuedMessageEnqueue
+                              : TestId.chat.send
+                        }
+                        disabled={submitBlocked && !showingStopControl}
+                        size={36}
+                        variant="transparent"
+                        aria-label={showingStopControl ? t('Stop') : t('Send')}
+                        onClick={showingStopControl ? onStopGenerating : () => handleSubmit()}
+                        className="chatbox-send-button shrink-0"
+                        style={{ background: 'transparent', color: 'inherit' }}
+                      >
+                        {showingStopControl ? (
+                          <ScalableIcon icon={IconPlayerStopFilled} size={16} />
+                        ) : (
+                          <ScalableIcon icon={IconArrowUp} size={16} />
+                        )}
+                      </ActionIcon>
+                    </Tooltip>
+                  </MetalFx>
+                </Flex>
               </Flex>
-            </Flex>
-          </Box>
+            </Box>
           </BorderBeam>
 
           <Disclaimer />

@@ -353,6 +353,25 @@ ul[data-sidebar='menu-sub'] > li {
   transform: scale(0.92);
 }
 
+.chatbox-send-button:disabled {
+  opacity: 0.4;
+}
+
+.chatbox-send-button:focus-visible {
+  outline: 2px solid var(--chatbox-tint-brand);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatbox-send-button {
+    transition: none;
+  }
+
+  .chatbox-send-button:active:not(:disabled) {
+    transform: none;
+  }
+}
+
 /* home hero orb: gentle levitation */
 @keyframes chatbox-orb-float {
   0%,

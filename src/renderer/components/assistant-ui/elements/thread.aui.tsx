@@ -3,7 +3,9 @@
 import { BorderBeam } from 'border-beam'
 import { Liquid } from 'liquid-gooey'
 import { MetalFx } from 'metal-fx'
-import { ThinkingOrb } from 'thinking-orbs'
+import ThinkingOrb from '@/components/icons/Loading'
+import { useComputedColorScheme } from '@mantine/core'
+import { useReducedMotion } from '@mantine/hooks'
 import {
   ActionBarMorePrimitive,
   ActionBarPrimitive,
@@ -206,13 +208,11 @@ const ThreadScrollToBottom: FC = () => {
 
 const ThreadWelcome: FC = () => {
   return (
-    <BorderBeam size="md" colorVariant="colorful" strength={0.6} active theme="dark">
-      <div className="aui-thread-welcome-root mb-6 flex flex-col items-center px-4 text-center">
-        <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl font-medium tracking-tight duration-200">
-          How can I help you today?
-        </h1>
-      </div>
-    </BorderBeam>
+    <div className="aui-thread-welcome-root mb-6 flex flex-col items-center px-4 text-center">
+      <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl font-medium tracking-tight duration-200">
+        How can I help you today?
+      </h1>
+    </div>
   )
 }
 
@@ -241,30 +241,45 @@ const ThreadSuggestionItem: FC = () => {
 }
 
 const Composer: FC<{ autoFocus: boolean }> = ({ autoFocus }) => {
+  const theme = useComputedColorScheme('light')
+  const reducedMotion = useReducedMotion()
   return (
     <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
-      <ComposerPrimitive.AttachmentDropzone asChild>
-        <div
-          data-slot="aui_composer-shell"
-          className="border-border/60 data-[dragging=true]:border-ring focus-within:border-border dark:border-muted-foreground/15 dark:focus-within:border-muted-foreground/30 flex w-full cursor-text flex-col gap-2 rounded-[var(--composer-radius)] border bg-[var(--composer-bg)] p-[var(--composer-padding)] transition-[border-color] data-[dragging=true]:border-dashed data-[dragging=true]:bg-[color-mix(in_oklab,var(--accent)_50%,var(--background))]"
-        >
-          <ComposerAttachments />
-          <ComposerPrimitive.Input
-            placeholder="Send a message..."
-            className="aui-composer-input caret-primary placeholder:text-muted-foreground/60 max-h-48 min-h-10 w-full resize-none bg-transparent px-2.5 py-1 text-base leading-6 outline-none"
-            rows={1}
-            autoFocus={autoFocus}
-            enterKeyHint="send"
-            aria-label="Message input"
-          />
-          <ComposerAction />
-        </div>
-      </ComposerPrimitive.AttachmentDropzone>
+      <BorderBeam
+        size="md"
+        colorVariant="colorful"
+        strength={0.7}
+        theme={theme}
+        active={!reducedMotion}
+        borderRadius={24}
+        className="w-full"
+      >
+        <ComposerPrimitive.AttachmentDropzone asChild>
+          <div
+            data-slot="aui_composer-shell"
+            className="border-border/60 data-[dragging=true]:border-ring focus-within:border-border dark:border-muted-foreground/15 dark:focus-within:border-muted-foreground/30 flex w-full cursor-text flex-col gap-2 rounded-[var(--composer-radius)] border bg-[var(--composer-bg)] p-[var(--composer-padding)] transition-[border-color] data-[dragging=true]:border-dashed data-[dragging=true]:bg-[color-mix(in_oklab,var(--accent)_50%,var(--background))]"
+          >
+            <ComposerAttachments />
+            <ComposerPrimitive.Input
+              placeholder="Send a message..."
+              className="aui-composer-input caret-primary placeholder:text-muted-foreground/60 max-h-48 min-h-10 w-full resize-none bg-transparent px-2.5 py-1 text-base leading-6 outline-none"
+              rows={1}
+              autoFocus={autoFocus}
+              enterKeyHint="send"
+              aria-label="Message input"
+            />
+            <ComposerAction />
+          </div>
+        </ComposerPrimitive.AttachmentDropzone>
+      </BorderBeam>
     </ComposerPrimitive.Root>
   )
 }
 
 const ComposerAction: FC = () => {
+  const theme = useComputedColorScheme('light')
+  const reducedMotion = useReducedMotion()
+  const sendDisabled = useAuiState((s) => s.composer.isEmpty || s.thread.isDisabled)
   return (
     <div className="aui-composer-action-wrapper relative flex items-center justify-between">
       <Liquid blur={6} contrast={18} fill="#e4e9f1">
@@ -275,8 +290,17 @@ const ComposerAction: FC = () => {
       <div className="flex items-center gap-1.5">
         <AuiIf condition={(s) => s.thread.capabilities.dictation}>
           <AuiIf condition={(s) => s.composer.dictation == null}>
-            <ComposerPrimitive.Dictate asChild>
-              <MetalFx preset="chromatic" strength={0.4} theme="dark">
+            <MetalFx
+              preset="chromatic"
+              variant="circle"
+              innerShadow
+              strength={0.4}
+              theme={theme}
+              paused={reducedMotion}
+              disableGlow={reducedMotion}
+              normalizeHostStyles={false}
+            >
+              <ComposerPrimitive.Dictate asChild>
                 <TooltipIconButton
                   tooltip="Voice input"
                   side="bottom"
@@ -288,12 +312,21 @@ const ComposerAction: FC = () => {
                 >
                   <MicIcon className="aui-composer-dictate-icon size-4" />
                 </TooltipIconButton>
-              </MetalFx>
-            </ComposerPrimitive.Dictate>
+              </ComposerPrimitive.Dictate>
+            </MetalFx>
           </AuiIf>
           <AuiIf condition={(s) => s.composer.dictation != null}>
-            <ComposerPrimitive.StopDictation asChild>
-              <MetalFx preset="chromatic" strength={0.4} theme="dark">
+            <MetalFx
+              preset="chromatic"
+              variant="circle"
+              innerShadow
+              strength={0.4}
+              theme={theme}
+              paused={reducedMotion}
+              disableGlow={reducedMotion}
+              normalizeHostStyles={false}
+            >
+              <ComposerPrimitive.StopDictation asChild>
                 <TooltipIconButton
                   tooltip="Stop voice input"
                   side="bottom"
@@ -305,41 +338,59 @@ const ComposerAction: FC = () => {
                 >
                   <SquareIcon className="aui-composer-stop-dictation-icon size-3.5 animate-pulse fill-current" />
                 </TooltipIconButton>
-              </MetalFx>
-            </ComposerPrimitive.StopDictation>
+              </ComposerPrimitive.StopDictation>
+            </MetalFx>
           </AuiIf>
         </AuiIf>
         <AuiIf condition={(s) => !s.thread.isRunning}>
-          <ComposerPrimitive.Send asChild>
-            <MetalFx preset="chromatic" strength={0.5} theme="dark">
+          <MetalFx
+            preset="chromatic"
+            variant="circle"
+            innerShadow
+            strength={sendDisabled ? 0.15 : 0.8}
+            theme={theme}
+            paused={reducedMotion || sendDisabled}
+            disableGlow={reducedMotion || sendDisabled}
+            normalizeHostStyles={false}
+          >
+            <ComposerPrimitive.Send asChild>
               <TooltipIconButton
                 tooltip="Send message"
                 side="bottom"
                 type="button"
-                variant="default"
+                variant="ghost"
                 size="icon"
-                className="aui-composer-send size-7 rounded-full"
+                className="aui-composer-send chatbox-send-button size-9 rounded-full bg-transparent text-inherit hover:bg-transparent"
                 aria-label="Send message"
               >
                 <ArrowUpIcon className="aui-composer-send-icon size-4" />
               </TooltipIconButton>
-            </MetalFx>
-          </ComposerPrimitive.Send>
+            </ComposerPrimitive.Send>
+          </MetalFx>
         </AuiIf>
         <AuiIf condition={(s) => s.thread.isRunning}>
-          <ComposerPrimitive.Cancel asChild>
-            <MetalFx preset="chromatic" strength={0.5} theme="dark">
+          <MetalFx
+            preset="chromatic"
+            variant="circle"
+            innerShadow
+            strength={0.5}
+            theme={theme}
+            paused={reducedMotion}
+            disableGlow={reducedMotion}
+            normalizeHostStyles={false}
+          >
+            <ComposerPrimitive.Cancel asChild>
               <Button
                 type="button"
-                variant="default"
+                variant="ghost"
                 size="icon"
-                className="aui-composer-cancel size-7 rounded-full"
+                className="aui-composer-cancel chatbox-send-button size-9 rounded-full bg-transparent text-inherit hover:bg-transparent"
                 aria-label="Stop generating"
               >
                 <SquareIcon className="aui-composer-cancel-icon size-3.5 fill-current" />
               </Button>
-            </MetalFx>
-          </ComposerPrimitive.Cancel>
+            </ComposerPrimitive.Cancel>
+          </MetalFx>
         </AuiIf>
       </div>
     </div>
@@ -434,7 +485,6 @@ const AssistantMessage: FC = () => {
                   <ThinkingOrb
                     state="searching"
                     size={20}
-                    theme="dark"
                     data-slot="aui_assistant-message-indicator"
                     aria-label="Assistant is working"
                   />

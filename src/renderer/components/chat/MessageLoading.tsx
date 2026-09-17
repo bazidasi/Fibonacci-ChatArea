@@ -1,8 +1,7 @@
-import { ThinkingOrb } from 'thinking-orbs'
+import ThinkingOrb from '../icons/Loading'
 import { Group, Text } from '@mantine/core'
 import { Typography } from '@mui/material'
 import type { Message } from '@shared/types'
-import { IconLoader } from '@tabler/icons-react'
 import { useAtomValue } from 'jotai'
 import { Trans, useTranslation } from 'react-i18next'
 import { buildChatboxUrl } from '@/packages/remote'
@@ -112,12 +111,7 @@ export function PreparingToolCallStatus(props: {
 
   return (
     <Group gap={6} align="center" wrap="nowrap" mt={6} mb={2} className="max-w-full">
-      <IconLoader
-        size={13}
-        className="animate-spin shrink-0"
-        color="var(--chatbox-tint-brand)"
-        style={{ display: 'block' }}
-      />
+      <ThinkingOrb state="connecting" size={20} className="shrink-0" aria-hidden />
       <Text size="xs" c="chatbox-secondary" lh="16px" truncate="end">
         {progress ? `${label} · ${progress}` : label}
       </Text>
@@ -143,7 +137,7 @@ function RetryingIndicator(props: { attempt: number; maxAttempts: number }) {
   const { t } = useTranslation()
   return (
     <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-1">
-      <ThinkingOrb state="working" size={20} />
+      <ThinkingOrb state="working" size={20} className="shrink-0" aria-hidden />
       <span>{t('Retrying {{attempt}}/{{maxAttempts}}', { attempt, maxAttempts })}</span>
     </div>
   )
@@ -153,14 +147,9 @@ export function LoadingBubble(props: { children: React.ReactNode }) {
   const { children } = props
   return (
     <div className="flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden">
-      <div
-        className="flex justify-start items-center mb-1 px-1 py-2
-                                                    border-solid border-blue-400/20 shadow-md rounded-lg
-                                                    bg-blue-100
-                                                    "
-      >
-        <ThinkingOrb state="working" size={20} />
-        <span className="mr-4 animate-pulse font-bold text-gray-800/70">{children}</span>
+      <div className="flex justify-start items-center gap-1.5 mb-1 px-2 py-2 rounded-lg bg-chatbox-background-secondary">
+        <ThinkingOrb state="working" size={20} className="shrink-0" aria-hidden />
+        <span className="mr-2 font-medium text-chatbox-secondary">{children}</span>
       </div>
     </div>
   )
