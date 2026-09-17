@@ -1,0 +1,184 @@
+/* ============================================================
+   Fibonacci Chat Area — neumorphism fusion layer
+   Fuses the two libraries from awesome-neumorphism that the app
+   ships with (ui-neumorphism + neumorphic-ui) into the existing
+   Soft-UI token system from globals.css, then applies it to the
+   chat surfaces (bubbles, input well, header, sidebar).
+   ============================================================ */
+
+/* ---------- neutralize ui-neumorphism's global resets ----------
+   ui-neumorphism/dist/index.css is imported BEFORE globals.css on
+   purpose: it resets margins, forces Roboto and underlines links.
+   The app owns its typography, so re-assert the important bits. */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Noto Sans', 'Noto Sans SC',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* ui-neumorphism theme vars remapped onto the Fibonacci soft-UI palette */
+:root {
+  --light-bg: var(--neo-surface);
+  --light-bg-dark-shadow: var(--neo-shadow-dark);
+  --light-bg-light-shadow: var(--neo-shadow-light);
+  --primary: var(--chatbox-brand);
+}
+
+/* ---------- chat bubbles: STANDARD design ----------
+   The native bubble styling lives in Message.tsx (tailwind classes).
+   The neumorphic slab/gradient/inset overrides were removed here —
+   only a subtle entrance fade is kept for polish. */
+
+/* message entrance — soft, once, on mount */
+@keyframes neo-msg-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.user-msg,
+.assistant-msg,
+.system-msg,
+.tool-msg {
+  animation: neo-msg-in 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-msg,
+  .assistant-msg,
+  .system-msg,
+  .tool-msg {
+    animation: none;
+  }
+}
+
+/* ---------- composer / input well ---------- */
+.neo-input-well,
+.mantine-InputBox-inputArea,
+.mantine-Textarea-input,
+.mantine-TextInput-input {
+  border: none;
+}
+
+/* ---------- title bar / header: raised soft slab ---------- */
+.title-bar {
+  background: transparent;
+}
+
+/* ---------- sidebar: soft panel with extruded groups ---------- */
+.neo-sidebar {
+  background: var(--neo-surface);
+}
+
+.neo-sidebar .mantine-Button-root[data-variant='light'] {
+  background: var(--neo-surface);
+  color: var(--chatbox-tint-primary);
+}
+
+.neo-sidebar .mantine-Button-root[data-variant='light']:hover {
+  background: var(--neo-surface-raised);
+}
+
+/* session list items: pill-shaped soft chips on hover */
+.neo-sidebar .mantine-NavLink-root {
+  border-radius: var(--chatbox-radius-md);
+  transition: box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.neo-sidebar .mantine-NavLink-root:hover {
+  background: color-mix(in srgb, var(--chatbox-brand) 7%, var(--neo-surface-raised));
+  box-shadow: var(--neo-shadow-outset-xs);
+}
+
+/* ---------- highlight ring for jump-to-message ---------- */
+[data-highlighted='true'] {
+  box-shadow: var(--neo-shadow-outset-sm), 0 0 0 2px color-mix(in srgb, var(--chatbox-brand) 55%, transparent) !important;
+}
+
+/* ---------- neumorphic-ui components, themed ----------
+   NeuButton ships hardcoded light-gray inline styles; the fusion layer
+   re-skins it (CSS !important wins over inline styles) so it follows the
+   app tokens in both light and dark themes. */
+.neo-neu-btn-host {
+  width: 100%;
+}
+
+.neo-neu-btn-host > div {
+  background: var(--neo-surface) !important;
+  color: var(--chatbox-tint-brand) !important;
+  border-radius: var(--chatbox-radius-lg) !important;
+  padding: 14px 20px !important;
+  font-weight: 600 !important;
+  box-shadow: var(--neo-shadow-outset-sm) !important;
+  transition: box-shadow 160ms ease, color 160ms ease !important;
+}
+
+.neo-neu-btn-host:hover > div,
+.neo-neu-btn-host > div[data-hovered='true'] {
+  color: var(--chatbox-brand) !important;
+  box-shadow: var(--neo-shadow-outset-lg) !important;
+}
+
+.neo-neu-btn-host:active > div,
+.neo-neu-btn-host[data-clicked='true'] > div {
+  box-shadow: var(--neo-shadow-inset) !important;
+  transform: translateY(0.5px);
+}
+
+/* inset well panel (welcome modal CTA section) */
+.neo-well {
+  background: color-mix(in srgb, var(--neo-shadow-light) 30%, var(--neo-surface));
+  box-shadow: var(--neo-shadow-inset-sm);
+  border: none !important;
+}
+
+/* ---------- splash screen: brand-pink spiral on soft surface ---------- */
+.splash-screen {
+  background-color: #f2f5fa;
+}
+
+html[data-theme='dark'] .splash-screen {
+  background-color: #262b35;
+}
+
+.splash-screen-logo {
+  color: #d6199b;
+  filter: drop-shadow(0 10px 24px color-mix(in srgb, #d6199b 35%, transparent));
+}
+
+html[data-theme='dark'] .splash-screen-logo {
+  color: #ff3fae;
+  filter: drop-shadow(0 10px 24px color-mix(in srgb, #ff3fae 30%, transparent));
+}
+
+.splash-screen-logo-bg {
+  color: #d6199b;
+  opacity: 0.22;
+}
+
+html[data-theme='dark'] .splash-screen-logo-bg {
+  color: #ff3fae;
+  opacity: 0.16;
+}
+
+/* ---------- reduced motion: calm everything ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .bubble-msg,
+  .bubble-user-msg,
+  .mantine-Paper-root,
+  .mantine-Card-root {
+    transition: none;
+  }
+}
