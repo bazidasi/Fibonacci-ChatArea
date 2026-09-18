@@ -1,4 +1,5 @@
 import type { LoggerPort, SessionRepositoryPort } from '../../ports'
+import { releaseSessionGenerationLock } from '../../generation/generation-lock'
 import type { Message, Session, SessionMetaPage, SessionMetaRecord, SessionSettings, Updater } from '../../types'
 import {
   applyMessageInsert,
@@ -304,6 +305,7 @@ export class SessionService {
       })
       await this.repository.deleteSession(sessionId)
       await this.repository.meta.delete(sessionId)
+      void releaseSessionGenerationLock(sessionId)
       await this.events.publish({ type: 'session-deleted', ids: [sessionId] })
     })
   }
@@ -321,6 +323,7 @@ export class SessionService {
       })
       await runInChunks(uniqueIds, 20, (sessionId) => this.repository.deleteSession(sessionId))
       await this.repository.meta.deleteMany(uniqueIds)
+      uniqueIds.forEach((id) => { void releaseSessionGenerationLock(id) })
       await this.events.publish({ type: 'session-deleted', ids: uniqueIds })
     })
     await this.publishListReset({ visible: true, archived: true })

@@ -61,6 +61,7 @@ import {
   setStoreBlob,
   store,
 } from './store-node'
+import { cleanup as cacheCleanup } from './cache'
 import * as windowState from './window_state'
 import { loadWorkspaceInstructions } from './workspace-instructions'
 
@@ -734,6 +735,7 @@ if (quitForInstallRequested) {
         } catch (e) {
           log.error('shortcut: failed to unregister', e)
         }
+        cacheCleanup()
         mcpIpc.closeAllTransports()
         destroyTray()
       })

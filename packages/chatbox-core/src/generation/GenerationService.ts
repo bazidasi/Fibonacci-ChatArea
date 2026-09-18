@@ -299,10 +299,12 @@ export class GenerationService<TContext> {
     const runtimeState = this.dependencies.runtime.start(sessionId, generationMessageId)
     const controller = runtimeState.abortController
     const externalSignal = options?.externalAbortSignal
+    let externalAbortHandler: (() => void) | undefined
     if (externalSignal?.aborted) {
       controller.abort(externalSignal.reason)
-    } else {
-      externalSignal?.addEventListener('abort', () => controller.abort(externalSignal.reason), { once: true })
+    } else if (externalSignal) {
+      externalAbortHandler = () => controller.abort(externalSignal.reason)
+      externalSignal.addEventListener('abort', externalAbortHandler, { once: true })
     }
 
     let targetMessage = initialTargetMessage
@@ -689,6 +691,9 @@ export class GenerationService<TContext> {
               () => {}
             )
             abortedMidStream = true
+            try {
+              await streamIterator.return?.(undefined).catch(() => {})
+            } catch {}
             break
           }
           if (raced.iteration.done) break
@@ -755,9 +760,7 @@ export class GenerationService<TContext> {
           }
         }
       } finally {
-        if (!abortedMidStream) {
-          await streamIterator.return?.(undefined)?.catch(() => {})
-        }
+        await streamIterator.return?.(undefined)?.catch(() => {})
       }
 
       if (controller.signal.aborted) {
@@ -842,6 +845,9 @@ export class GenerationService<TContext> {
       })
       await sessions.persistStreamingMessage(sessionId, targetMessage, { refreshCounting: true })
     } finally {
+      if (externalSignal && externalAbortHandler) {
+        externalSignal.removeEventListener('abort', externalAbortHandler)
+      }
       this.dependencies.runtime.finishActive(sessionId, generationMessageId, runtimeState)
       steering?.release()
       this.dependencies.steering?.wake(sessionId)

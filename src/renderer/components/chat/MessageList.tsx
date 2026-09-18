@@ -472,21 +472,9 @@ const MessageList = forwardRef<MessageListRef, MessageListProps>((props, ref) =>
 
     updateViewportHeight()
 
-    if (typeof ResizeObserver === 'undefined') {
-      window.addEventListener('resize', updateViewportHeight)
-      return () => {
-        window.removeEventListener('resize', updateViewportHeight)
-      }
-    }
-
-    const observer = new ResizeObserver(() => {
-      updateViewportHeight()
-    })
-
-    observer.observe(element)
-
+    window.addEventListener('resize', updateViewportHeight)
     return () => {
-      observer.disconnect()
+      window.removeEventListener('resize', updateViewportHeight)
     }
   }, [])
 

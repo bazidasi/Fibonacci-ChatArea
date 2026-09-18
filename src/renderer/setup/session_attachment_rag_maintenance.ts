@@ -18,6 +18,7 @@ const log = getLogger('session-attachment-rag-maintenance')
 const ORPHAN_CLEANUP_INTERVAL_MS = 30 * 60 * 1000
 
 let maintenanceStarted = false
+let maintenanceTimer: ReturnType<typeof setInterval> | undefined
 
 type SessionAttachmentRagMaintenanceTask = {
   name: string
@@ -125,8 +126,25 @@ export function initSessionAttachmentRagMaintenance() {
 
   void runSessionAttachmentRagMaintenancePass()
   for (const task of maintenanceTasks) {
-    setInterval(() => {
+    maintenanceTimer = setInterval(() => {
       void runMaintenanceTask(task)
     }, task.intervalMs)
   }
 }
+
+export function stopSessionAttachmentRagMaintenance(): void {
+  if (maintenanceTimer) {
+    clearInterval(maintenanceTimer)
+    maintenanceTimer = undefined
+  }
+  maintenanceStarted = false
+}
+
+// Stop maintenance when the renderer tab becomes hidden to avoid wasted work.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopSessionAttachmentRagMaintenance()
+  } else if (platform.isDesktopLike && !maintenanceStarted) {
+    initSessionAttachmentRagMaintenance()
+  }
+})

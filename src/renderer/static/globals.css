@@ -601,3 +601,16 @@ div[data-vaul-drawer] {
 .chatbox-action-bar-pulse-alt {
   animation: chatbox-action-bar-pulse 600ms ease-out 2;
 }
+
+/* App-level reduced motion — covers ALL animations/transitions
+ * regardless of which component owns them. Applied via
+ * data-reduce-motion attribute set by bootstrapReduceMotion()
+ * based on user setting + hardware capability detection. */
+[data-reduce-motion] *,
+[data-reduce-motion] *::before,
+[data-reduce-motion] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

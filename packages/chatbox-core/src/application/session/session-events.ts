@@ -61,6 +61,10 @@ export class SessionEventBus {
     return () => this.listeners.delete(listener)
   }
 
+  destroy(): void {
+    this.listeners.clear()
+  }
+
   async publish(event: SessionApplicationEvent): Promise<void> {
     const results = await Promise.allSettled([...this.listeners].map(async (listener) => listener(event)))
 

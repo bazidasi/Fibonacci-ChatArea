@@ -24,6 +24,7 @@ export function createDefaultSettings(): Settings {
     showModelName: true,
     showMessageTimestamp: false,
     showFirstTokenLatency: false,
+    prefersReducedMotion: false,
     showAvatar: true,
     hideSystemPromptMessage: false,
     messageLayout: 'bubble',

@@ -4,7 +4,7 @@ import { initSettingsStore } from '@/stores/settingsStore'
 import { NODE_ENV } from '@/variables'
 
 function monitorServerStatus() {
-  setInterval(() => {
+  const id = setInterval(() => {
     console.debug(
       'MCP Servers:',
       JSON.stringify(
@@ -20,6 +20,7 @@ function monitorServerStatus() {
       )
     )
   }, 10000)
+  return () => clearInterval(id)
 }
 
 initSettingsStore()
@@ -31,8 +32,13 @@ initSettingsStore()
     ]
     console.info(`mcp bootstrap ${servers.length} servers, with license key: ${!!licenseKey}`)
     mcpController.bootstrap(servers)
+    let stopMonitor: (() => void) | undefined
     if (NODE_ENV === 'development') {
-      monitorServerStatus()
+      stopMonitor = monitorServerStatus()
+    }
+    // Wire stopMonitor to app quit when available
+    if (stopMonitor !== undefined) {
+      window.addEventListener('beforeunload', stopMonitor)
     }
   })
   .catch((err) => {

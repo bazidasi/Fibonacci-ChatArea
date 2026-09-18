@@ -9,8 +9,8 @@ import { QueryClient } from '@tanstack/react-query'
 export function createChatQueryClient(): QueryClient {
   const queryClient = new QueryClient()
   // Session updates are immutable and already preserve unchanged branches.
-  // Re-running replaceEqualDeep over a large message tree on every stream
-  // chunk duplicates that work on the renderer main thread.
-  queryClient.setQueryDefaults(['chat-session'], { structuralSharing: false })
+  // structuralSharing:true (default) lets replaceEqualDeep skip unchanged
+  // subtrees via Object.is — eliminating per-chunk React re-renders for
+  // unchanged messages.
   return queryClient
 }

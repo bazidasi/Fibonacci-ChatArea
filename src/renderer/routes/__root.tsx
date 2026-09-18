@@ -72,6 +72,7 @@ import { initOnboardingStore, onboardingStore } from '@/stores/onboardingStore'
 import * as premiumActions from '@/stores/premiumActions'
 import * as settingActions from '@/stores/settingActions'
 import { initSettingsStore, settingsStore, useLanguage, useSettingsStore, useTheme } from '@/stores/settingsStore'
+import { bootstrapReduceMotion } from '@/lib/reduce-motion-bootstrap'
 import { useUIStore } from '@/stores/uiStore'
 import { CHATBOX_BUILD_CHANNEL, CHATBOX_BUILD_PLATFORM } from '@/variables'
 import { blobToDataUrl } from './image-creator/-components/constants'
@@ -190,6 +191,7 @@ function Root() {
     ;(async () => {
       // Wait for stores to hydrate from persistent storage
       await Promise.all([initSettingsStore(), initOnboardingStore()])
+      bootstrapReduceMotion()
       void prefetchModelRegistry()
 
       const remoteConfig = await remote

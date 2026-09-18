@@ -132,22 +132,8 @@ const getChatboxHeaders = async () => {
 
 // ========== 各个接口方法 ==========
 
-export async function checkNeedUpdate(version: string, os: string, config: Config, settings: Settings) {
-  type Response = {
-    need_update?: boolean
-  }
-  // const res = await ofetch<Response>(`${RELEASE_ORIGIN}/chatbox_need_update/${version}`, {
-  const res = await ofetch<Response>(`${getAPIOrigin()}/chatbox_need_update/${version}`, {
-    method: 'POST',
-    retry: 3,
-    body: {
-      uuid: config.uuid,
-      os: os,
-      // settings can arrive null from a corrupted store; treat as tracking-off
-      allowReportingAndTracking: settings?.allowReportingAndTracking ? 1 : 0,
-    },
-  })
-  return !!res.need_update
+export async function checkNeedUpdate(_version: string, _os: string, _config: Config, _settings: Settings) {
+  return false
 }
 
 // export async function getSponsorAd(): Promise<null | SponsorAd> {
@@ -172,50 +158,26 @@ export async function checkNeedUpdate(version: string, os: string, config: Confi
 //     return res['data'] || []
 // }
 
-export async function listCopilotTags(lang: string) {
-  type Response = {
-    data: string[]
-  }
-  const res = await ofetch<Response>(`${getAPIOrigin()}/api/system_copilots/tags/${lang}`, {
-    method: 'GET',
-    retry: 3,
-  })
-  return res.data
+export async function listCopilotTags(_lang: string): Promise<string[]> {
+  return []
 }
 
 export async function listCopilotsByCursor(
-  lang: string,
-  filters?: {
+  _lang: string,
+  _filters?: {
     limit?: number
     cursor?: string
     tag?: string
     search?: string
   }
-) {
-  type Response = {
-    data: CopilotDetail[]
-    next_cursor: string | null
-  }
-  const res = await ofetch<Response>(`${getAPIOrigin()}/api/system_copilots/list`, {
-    method: 'POST',
-    retry: 3,
-    body: { lang, ...filters },
-  })
-  return res
+): Promise<{ data: CopilotDetail[]; next_cursor: string | null }> {
+  return { data: [], next_cursor: null }
 }
 
-export async function recordCopilotUsage(params: {
+export async function recordCopilotUsage(_params: {
   id: string
   action: 'create_session' | 'create_thread' | 'create_message' | 'use_copilot'
-}) {
-  await ofetch(`${getAPIOrigin()}/api/system_copilots/record_usage`, {
-    method: 'POST',
-    body: {
-      ...params,
-      device_id: (await platform.getConfig()).uuid,
-    },
-  })
-}
+}) {}
 
 export async function recordCopilotShare(detail: CopilotDetail) {
   await ofetch(`${getAPIOrigin()}/api/copilots/share-record`, {

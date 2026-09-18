@@ -125,6 +125,7 @@ export function createChatApplication(options: CreateChatApplicationOptions): Ch
       if (disposed) return
       disposed = true
       sessionQueryBridge.dispose()
+      sessionEvents.destroy()
       settingsStore.getState().destroy()
       settings.dispose()
       generationRuntime.dispose()

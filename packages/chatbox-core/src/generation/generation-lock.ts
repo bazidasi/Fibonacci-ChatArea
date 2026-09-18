@@ -28,3 +28,11 @@ export async function withSessionGenerationLock<T>(sessionId: string, task: () =
 export function resetSessionGenerationLocksForTests(): void {
   sessionGenerationTails.clear()
 }
+
+/**
+ * Remove orphaned lock entries for a session that has ended.
+ * Called by session lifecycle management (e.g. SessionService on session deletion).
+ */
+export function releaseSessionGenerationLock(sessionId: string): void {
+  sessionGenerationTails.delete(sessionId)
+}
