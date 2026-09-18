@@ -11,7 +11,7 @@ export function RouteComponent() {
   const navigate = useNavigate()
   useEffect(() => {
     if (!isSmallScreen) {
-      navigate({ to: '/settings/provider/$providerId', params: { providerId: 'openai' }, replace: true })
+      navigate({ to: '/settings/provider/$providerId', params: { providerId: 'fibonacci' }, replace: true })
     }
   }, [isSmallScreen, navigate])
 

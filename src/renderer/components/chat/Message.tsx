@@ -1042,7 +1042,7 @@ const _Message: FC<Props> = (props) => {
         {msg.generating && (
           <div
             className={cn(
-              'flex items-center py-3',
+              'flex w-fit items-center py-3',
               isBubbleLayout ? 'px-1 rounded-lg bg-chatbox-background-secondary' : 'px-4'
             )}
             style={{ display: 'flex' }}

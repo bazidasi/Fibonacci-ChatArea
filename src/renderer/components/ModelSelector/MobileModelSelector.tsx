@@ -7,6 +7,11 @@ import { forwardRef, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SwipeableViews from 'react-swipeable-views'
 import { Drawer } from 'vaul'
+
+// ponytail: @types/react-swipeable-views ships React 19 types against this React 18 app
+// (TS2786 at its JSX use). Cast silences it; replace the package to drop this.
+const SwipeableViewsAny = SwipeableViews as unknown as React.ComponentType<Record<string, unknown>>
+
 import { useProviders } from '@/hooks/useProviders'
 import { collapsedProvidersAtom } from '@/stores/atoms/uiAtoms'
 import { ScalableIcon } from '../common/ScalableIcon'
@@ -155,7 +160,7 @@ export const MobileModelSelector = forwardRef<HTMLDivElement, MobileModelSelecto
               </Tabs>
 
               <Stack gap="md" className="flex-1 relative overflow-hidden">
-                <SwipeableViews
+                <SwipeableViewsAny
                   index={swipeIndex}
                   onChangeIndex={handleSwipeChange}
                   resistance
@@ -258,7 +263,7 @@ export const MobileModelSelector = forwardRef<HTMLDivElement, MobileModelSelecto
                     {renderFavoriteTab()}
                     <div className="h-[--mobile-safe-area-inset-bottom] min-h-4" />
                   </Stack>
-                </SwipeableViews>
+                </SwipeableViewsAny>
               </Stack>
             </Stack>
           </Drawer.Content>

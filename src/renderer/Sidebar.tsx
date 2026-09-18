@@ -171,7 +171,7 @@ export default function Sidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton size="lg" onClick={() => navigate({ to: '/about' })}>
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white shadow-[0_1px_4px_rgba(0,0,0,0.18)]">
                     <img
                       src={icon}
                       alt="Fibonacci Chat Area"

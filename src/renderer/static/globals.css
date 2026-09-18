@@ -125,7 +125,7 @@
   /* shadcn sidebar — inset (sidebar-08) surfaces on the app's neo material */
   --sidebar: var(--neo-surface);
   --sidebar-foreground: var(--chatbox-tint-primary);
-  --sidebar-primary: var(--chatbox-tint-brand);
+  --sidebar-primary: #ffffff;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: var(--neo-surface-raised);
   --sidebar-accent-foreground: var(--chatbox-tint-primary);

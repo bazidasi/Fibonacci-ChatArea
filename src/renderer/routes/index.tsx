@@ -11,7 +11,6 @@ import {
 } from '@shared/types'
 import {
   type Icon,
-  IconBrain,
   IconChevronLeft,
   IconChevronRight,
   IconCode,
@@ -30,8 +29,7 @@ import { z } from 'zod'
 import { trackJkClickEvent } from '@/analytics/jk'
 import { JK_EVENTS, JK_PAGE_NAMES } from '@/analytics/jk-events'
 import { rendererApplication } from '@/app/renderer-application'
-import { Button as MotionButton } from '@/components/animate-ui/primitives/buttons/button'
-import { Fade, Fades } from '@/components/animate-ui/primitives/effects/fade'
+import { Fade } from '@/components/animate-ui/primitives/effects/fade'
 import { Slide, Slides } from '@/components/animate-ui/primitives/effects/slide'
 import { ScalableIcon } from '@/components/common/ScalableIcon'
 import { ImageInStorage } from '@/components/Image'
@@ -445,10 +443,9 @@ function Index() {
   return (
     <Page title="">
       <div className="p-0 flex flex-col h-full min-h-0 overflow-hidden">
-        {/* Top-anchored hero (per the reference composition): the orb starts
-            ~8% down the viewport and the composer area below holds its ground.
-            Natural document flow keeps overflow scrolling instead of clipping. */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-md">
+        {/* Hero + composer cluster, centered in the viewport when it fits;
+            scrolls as one unit when it doesn't. */}
+        <div className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto pb-md">
           {showNewUserScenarios ? (
             <Stack className="my-auto w-full" py="xl">
               <NewUserScenarioGrid scenarios={newUserScenarios} onSelect={handleScenarioSelect} />
@@ -490,38 +487,9 @@ function Index() {
                   )}
                 </Stack>
               </Slide>
-
-              {!isSmallScreen && (
-                <Flex mt={16} justify="center" gap="sm">
-                  {/* inView: the last pill sits right at the scroll clip on load,
-                      where the intersection observer mis-fires — animate on mount */}
-                  <Fades inView delay={180} holdDelay={80}>
-                    <MotionButton
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      onClick={() => router.navigate({ to: '/image-creator' })}
-                      className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
-                    >
-                      <ScalableIcon icon={IconPhoto} size={16} className="text-chatbox-tint-brand" />
-                      {t('Create Image')}
-                    </MotionButton>
-                    <MotionButton
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      onClick={() => setQuote(t('Brainstorm creative ideas with me about '))}
-                      className="rounded-full border border-solid border-chatbox-border-secondary bg-chatbox-background-secondary px-4 py-2 text-sm text-chatbox-tint-primary shadow-none hover:bg-chatbox-background-tertiary"
-                    >
-                      <ScalableIcon icon={IconBrain} size={16} className="text-chatbox-tint-brand" />
-                      {t('Brainstorm')}
-                    </MotionButton>
-                  </Fades>
-                </Flex>
-              )}
             </Stack>
           )}
-        </div>
 
-        <Stack gap="sm" className="shrink-0">
           {session.copilotId ? (
             <Box px="md">
               <Stack gap="sm" className={widthFull ? 'w-full' : 'w-full max-w-4xl mx-auto'}>
@@ -560,7 +528,7 @@ function Index() {
             )
           )}
 
-          <Box>
+          <Box className="w-full max-w-4xl mx-auto">
             <InputBox
               sessionType="chat"
               sessionId="new"
@@ -607,7 +575,7 @@ function Index() {
               </Stack>
             </Fade>
           )}
-        </Stack>
+        </div>
       </div>
     </Page>
   )
